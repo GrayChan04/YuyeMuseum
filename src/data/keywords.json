@@ -1,0 +1,180 @@
+{
+  "keywords": [
+    {
+      "id": "label-number-01",
+      "name": "一号展签",
+      "aliases": ["暖黄编号", "展签练习"],
+      "summary": "一份用来示范“梗如何被收藏”的虚构展签，从第一次记录走到共同补完。",
+      "startTime": "2024-03",
+      "intro": "这不是一段真实的粉圈历史，而是一件交互样品：它展示未来每个关键词会如何拥有出处、节点和不断生长的解释。",
+      "origin": {
+        "label": "榆野博物馆 V1 界面演示",
+        "url": ""
+      },
+      "curatorNote": "先替一段尚未来到的记忆，留好展柜的位置。",
+      "isDemo": true,
+      "nodes": [
+        {
+          "id": "label-born",
+          "time": "2024-03",
+          "title": "第一张空白展签",
+          "summary": "一个关键词第一次进入档案时，会先被写下最小但可追溯的说明。",
+          "body": [
+            "每件馆藏都从一张展签开始：它叫什么、最早出现于何时、为什么值得留下。",
+            "真实内容上线后，这里将替换为经馆主核实的事件说明，不会把演示文字混入真实档案。"
+          ],
+          "sources": [
+            {
+              "platform": "本馆演示素材",
+              "account": "榆野博物馆",
+              "label": "V1 信息结构样品",
+              "url": ""
+            }
+          ],
+          "images": [
+            {
+              "src": "demo-archive.svg",
+              "alt": "暖黄色展签与编号一的演示插画",
+              "source": {
+                "platform": "本馆演示素材",
+                "account": "榆野博物馆",
+                "label": "展签插画",
+                "url": ""
+              }
+            }
+          ],
+          "audio": [],
+          "videos": []
+        },
+        {
+          "id": "label-context",
+          "time": "2024-06",
+          "title": "补上来龙去脉",
+          "summary": "时间轴让零散片段不只“好笑”，也能被新来的人读懂。",
+          "body": [
+            "第二个节点开始补充语境：前一件事怎样影响后一件事，一个称呼又如何慢慢获得新的用法。",
+            "节点按月份排列；不确定的日期宁可标注待考，也不制造虚假的精确感。"
+          ],
+          "sources": [],
+          "images": [],
+          "audio": [],
+          "videos": [
+            {
+              "title": "外部视频跳转样式演示",
+              "url": "https://www.bilibili.com/",
+              "source": {
+                "platform": "哔哩哔哩",
+                "account": "演示占位（非真实出处）",
+                "label": "仅演示外链，不代表馆藏来源",
+                "url": "https://www.bilibili.com/"
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-living",
+          "time": "2025-01",
+          "title": "档案继续生长",
+          "summary": "新的出处和解释会成为新节点，旧记录则保留可回溯的脉络。",
+          "body": [
+            "博物馆不是把一个梗钉死在过去，而是给它一条能够继续向下生长的时间线。",
+            "等真实馆藏准备好，只需更新 JSON 数据和素材文件，页面结构无需重做。"
+          ],
+          "sources": [],
+          "images": [],
+          "audio": [],
+          "videos": []
+        }
+      ]
+    },
+    {
+      "id": "echo-sample",
+      "name": "回声样本",
+      "aliases": ["小草坪回声", "声音样品"],
+      "summary": "一段虚构的声音馆藏，用来展示图片、音频与外部视频出处如何共存。",
+      "startTime": "2025-02",
+      "intro": "这件演示馆藏关注同一句话如何从声音变成图片，再回到大家的回应里；其中不包含任何真实艺人事件。",
+      "origin": {
+        "label": "榆野博物馆 V1 媒体能力演示",
+        "url": ""
+      },
+      "curatorNote": "有些记忆先被听见，后来才拥有名字。",
+      "isDemo": true,
+      "nodes": [
+        {
+          "id": "echo-heard",
+          "time": "2025-02",
+          "title": "先听见一声回响",
+          "summary": "本地音频会使用浏览器原生播放器，不把来源不明的音频藏进页面。",
+          "body": [
+            "这一节点只用于验证本地音频播放器。正式馆藏中的音频需要下载到仓库并完整标注来源。",
+            "演示音是一段由本馆制作的短提示音，不对应真实人物或事件。"
+          ],
+          "sources": [],
+          "images": [],
+          "audio": [
+            {
+              "src": "data:audio/wav;base64,UklGRqQMAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YYAMAAAAAJsL8xXqHaQinCO4IEga/hDcBRn6/e6+5V/flNyp3YPimOoF9aYAMgxlFhwefiIPI74f6BhRDwcETfhw7afk7d7n3M3ea+Qg7fH3qAPzDo0YYR+pIgYiih23FW8L3P9R9BvqZuIS3p3dF+EY6NXxMP3bCH8T5BsQIW0i0R+IGU0QMQV9+Y3upuXQ37vdpN9T5R7u/viuBM8PFBllHwQioiBpG/YSRwig/GLx4ec+4UPeSt815G7s+vaYAuQNhBdSHn0hoyDdG8ATQwms/V7yuOjl4bfekt9b5H7s/vaUAtcNaRcdHiIhGSAjG9sSRAis/H/xHuiv4f/eYuCt5Tnu9viQBJcPrBitHtsg8R4rGUIQUwW7+e/uSebg4GHf/eFf6Lvx4vxrCOES8RqVHzcgwRykFcgLbwAJ9Q3rwOMR4Hrg7uTZ7Dn3twLYDS8Xhh0MIG0e3xgaEEAFuvkI743mZOE54DTj8OmN88n+Kwo1FJYbVR/1HoEakRIvCLv8ufGd6JziguCW4pPoq/Gq/BgIbxJNGqUe4x7+GnsTXAn//enymelP4+fgseJy6GDxSPyuBwYS6RlEHoAekxoIE+UIjv2P8mrpYONF4WLjb+mV8pL94gj1EmcaMR7LHUUZPhHVBnv7xfAx6PDiwOHJ5J/rTvV6AJILCBWGGyQeghzdFv8NKgPl98jtQ+Zm4r3iPOc/76P57AR/D9gXxxyXHSoa/xIcCez9DPMM6jjkZuLa5DrrmPSa/6kKKBS4GmUdyxslFkgNfAJX93ntU+bx4tPj1ug+8dD7/AYeEbcYqRxeHOIX3g+DBVr6C/Ad6L7jleOo51vvh/mpBBQPOxflG18clhgdERMH+/uC8TvpZuS+413nte6r+LoDNQ6EFmQbFxyDGDIRQwc6/MnxiOm75B7kyuct7yT5JwSDDp8WOhueG70XLxAiBiT76vAM6cLkuOTu6Lzw6/rhBekPcBdIG9caMBYMDrYDzfgK7/bnseS+5fLqevP8/cwIMxKzGEMbexmjE6wKAwBc9W3so+br5IznGu6G90wCsAwFFfQZsBocF80P8AUh+x/xiumf5f/lm+qx8vH8rQclEcwXjBrxGEATZwrc/1v1newT56jlluhh7+n4mwOwDX0VtxmqGVkVfA1iA7z4T++v6Pflm+dU7Sz2pwADC4ITthi/GXEWXA+xBRP7TvEJ6n/mSedF7Jn02v5KCSES3heHGdMWORDbBlT8cfLl6vvmYOcA7BD0LP6VCIARYRc1GawWNxD0Bn/8qvIq60znvedp7H30kv7iCKIRSBfYGAwWYg8HBqD7AfLe6nbnZOh+7dr1AAAiCnQSfhdaGOIUtA0ZBMb5k/Ak6p/nd+lW7y/4bAI1DMoTzheIFwUTGAssAQ/3k+5A6Q3oMesa8ob7vgXnDlcV4hcSFjwQcgdP/a7zUeyT6CHp4e3z9dv/xgnhEa0WSReYE0oMuQKr+PzvSeqf6E3r0/H5+gwFKQ6gFDoXfBW7DwsHDP2f84jsHOn+6QPvOfcTAbUKThJvFlEW+hE9CpMA0fbQ7hfqi+lE7Y70A/7VByUQWxV6FksTagwrA1X5yvAv65jpUuzW8uH7tAVpDlEUSRbuE7gN2gQP+z7yHuzf6fDr6vGh+mEEQg2HE/YVFxRIDq4F+vsU873sNOr4667xNvrfA8AMFxOjFeUTNQ61BRb8Q/P97IPqU+wP8pL6JgTiDAYTVxVgE4YN+ARt+9Ly4+zP6gPtC/Ov+y4FnA1FEwQVfxI6DHwDDPrX8YfsM+sd7qz0if3jBtAOsROGFCURQApDAQj4dfAZ7Nnrwu8D9x0ALAlREBIUqBMpD4cHWP6G9ebu2esB7R/yIfpZA9kL2xEcFCUSYAwFBNX6wPJ57Rvs8O5d9Qb+FgeiDhETdBO3D6cIw//x9hDwl+xC7ezxlPmYAgkLGhF/E7YRIQz2A/T6DfPy7b3sru8j9rX+ige6DrcSpRKKDkoHeP4B9rnv/+xp7qfzk/tyBFQMgRHXEg4QwglWAaP4kvGx7djt/fE2+eoBLgouEJgS5RB2C4EDyfo984ruu+378JH3AwBxCPgOJRJDEYcM/wRe/JH0We/f7Xnwjfa//jQHBQ6qEVEREA3eBVz9ePX67yHuVvAY9hb+gAZqDUMRKxEqDSoGxf3o9V7wa+5/8CD2Av5UBi4N/BDfEOEM7QWf/eP1gfC27u3wn/Z6/qsGSw3SEG4QOAwtBfH8cfVr8AzvovGT93n/ege2DbcQyw8qC+wDxvuk9DPwfu+u8gH59wCuCFMOkBDgDqkJKwIu+pfz+O8s8CX07/rqAi4K/w44EI4NqAfv/0D4cfLn7z3xH/Zf/TwF0QuJD34PtQsaBUj9IvZm8Tbw3PKx+EkAygdiDbMPMA43CQICVfoO9LjwIvEv9eH7kQNcCpcOOQ8cDAUGd/5O91DytvDl8lD4nv8AB6EMHA/VDSAJKQKt+or0RfGv8av1OPyzAzwKMQ6VDlILOgXX/QP3d/JV8eXzf/m6AMAHzQybDrYMmweYAHL5+/OV8dnyc/c3/msFOAslDnUNVwnZAqX7lPUy8lvyA/Y4/GEDpwltDbwNgwqWBID9E/f58kDyFfW6+rkBQAifDLUNOwvYBfT+W/jF82HyjPSy+XkAHAfeC4ENmwurBgAAWvl49KHyUPQQ+aH/RQY9CzoNuAseB6YAB/oC9evyTfTJ+Cz/wQXKCvAMows8B+wAYfpc9TPzePTS+BT/kQWKCqsMZAsOB9YAavqE9XXzyvQk+VT/rgV6CmsM/wqYBmwAKPp/9bXzRPW9+ef/EwaRCioMbwrbBbL/pPlY9fzz7PWe+scAswbDCtkLqwnWBK/+6/gg9Vr0zfbJ++wBgAf8CmgLqQiFA2v9D/jt9OT08/c//UoDZQgiC8AKXAfrAfb7KPfa9LD1a/n8/tEERQkZC8kJuAUOAGT6V/YJ9df2O/v2AGUG/gm9Cm4IuwP9/df4wfWa9Wv4ZP0XA+IHZgruCZ4GawHV+3j3kvWu9nj61f86BRcJUQqPCFYE4P7E+Xv29/Vc+Pf8bgIrB80JkwmQBqcBR/wE+Bn2Ffer+sz/9wSoCMwJDwj3A7r+4vnb9on2APmE/b8CJAdpCeQIvwXqANb7A/iS9u/3r/uyAHsFnggsCf8GvwKy/Vv5Bfdg90767f7ZA5gHDAnIBy8EWv+8+rn3N/da+Xz9WwJ+BqYILwhABb0AB/yL+FX3wvhf/BIBawUaCE4I+wXZASv9Yfmh93H4kPsGAHQEgAc7CHAGrQId/ij6A/hW+AX7OP+kA+oGCgitBkID2v7S+mv4YPiy+qb+AANlBskHwAaeA2D/WvvN+IL4jvpL/osC+QWEB7IGyQO0/737Ivmz+JD6If5DAqgFQAeNBskD2P/5+2b57fiz+iP+JQJzBQEHVAalA9H/E/ya+S/58fpN/i4CVwXHBgkGXgOk/w38wPl4+Un7m/5aAlEFjgasBfgCVP/t+935y/m7+wn/oQJZBVEGOwV0Auf+u/v4+S76SPyV//4CaAUKBrIE1AFi/n77Gfql+vH8OQBpA3QFsQUPBBoBzv1C+0r6Nvu0/fAA1gNyBT4FTgNKADT9EfuV+ub7kf6xAToEVgWpBHACbP+f/Pn6BPu5/IP/cAKHBBUF7gN4AYn+H/wH+577rP1/ACADrgSlBAoDbQCx/cP7SPtn/Lv+dwGuA6AE/gMDAl3/9fyc+8X7Xv3Z/1sCCQRSBCED4QBa/mr8ufuB/Hn+8wASAx4EvQMUArn/fP0j/CP8d/2o//EBiAPiA+MC6ACi/tz8Mfzb/Jr+0AC3AqcDTwPRAbb/u/2R/Jz81/3O/9EBKwNlA24CoACh/iP9q/xg/f/+8gCKAjgDwQJUAXT/zP3x/C39aP4uAN4B3gLXAs8BJgB3/ln9Mf0I/pD/OQFsAr4CFQKwABP/0f1b/dn9Gv+oAPIBhQIvAhEBl/9K/p/90v3M/jEAfQE6AiYCTQEAALr+7/3o/aL+1/8UAecBBgJoAUwAGv9D/hH+lP6Y/7wAlQHVAWoBfQBp/5L+Rv6d/nP/dwBIAZwBWAGXAKX/2/6C/rf+Y/9DAAQBYAE3AZ4A0P8a/7/+3f5k/yEAygAjAQ0BlgDs/1D/+/4K/3P/CwCZAOcA3QCCAPv/ff81/zz/i/8AAG8ArgCpAGYAAgCj/27/cf+p//3/SwB3AHMARgADAMb/pP+o/8z//v8qAEEAPAAjAAEA5v/a/9//7/8AAAoACwAFAA==",
+              "title": "回声样本 · 演示提示音",
+              "source": {
+                "platform": "本馆演示素材",
+                "account": "榆野博物馆",
+                "label": "原创功能测试音",
+                "url": ""
+              }
+            }
+          ],
+          "videos": []
+        },
+        {
+          "id": "echo-seen",
+          "time": "2025-04",
+          "title": "声音有了形状",
+          "summary": "图片与展品说明一起出现，出处始终贴在作品旁边。",
+          "body": [
+            "图片不是脱离语境的装饰。平台、账号和原始链接会与图片一起展示，让后来的人知道它从哪里来。"
+          ],
+          "sources": [],
+          "images": [
+            {
+              "src": "demo-echo.svg",
+              "alt": "黄绿色波纹从圆形展台向外扩散的演示插画",
+              "source": {
+                "platform": "本馆演示素材",
+                "account": "榆野博物馆",
+                "label": "回声插画",
+                "url": ""
+              }
+            }
+          ],
+          "audio": [],
+          "videos": []
+        },
+        {
+          "id": "echo-answered",
+          "time": "2025-08",
+          "title": "有人接住了回声",
+          "summary": "馆藏最终通往共同阅读，也为未来的小草坪互动留下接口。",
+          "body": [
+            "当一个故事被读懂，它也许会在小草坪里获得新的回应。V1 暂时只展示静态演示，真实提交会等到安全的数据服务准备好以后开放。"
+          ],
+          "sources": [],
+          "images": [],
+          "audio": [],
+          "videos": [
+            {
+              "title": "视频出处卡片样式演示",
+              "url": "https://www.bilibili.com/",
+              "source": {
+                "platform": "哔哩哔哩",
+                "account": "演示占位（非真实出处）",
+                "label": "外部平台入口",
+                "url": "https://www.bilibili.com/"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
