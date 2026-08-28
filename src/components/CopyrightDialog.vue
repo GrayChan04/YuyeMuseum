@@ -28,7 +28,6 @@ defineExpose({ open })
         <span aria-hidden="true">×</span>
       </button>
 
-      <p class="eyebrow">RIGHTS &amp; CREDIT</p>
       <h2 id="rights-title">版权反馈</h2>
       <p class="rights-dialog__intro">
         我们正在准备安全的版权反馈通道。正式运营前，这里会用于提交素材更正、补充署名与删除申请。

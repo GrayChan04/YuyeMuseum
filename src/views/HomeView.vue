@@ -1,102 +1,181 @@
 <script setup>
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import SearchBox from '../components/SearchBox.vue'
 import keywordData from '../data/keywords.json'
-import { formatMonth, publicAsset } from '../utils/format'
+import { formatMonth } from '../utils/format'
 
 const keywords = keywordData.keywords
+const searchDock = ref(null)
+
+const SNAP_DISTANCE = 48
+let snapConsumed = false
+let snapEligible = false
+let wheelDistance = 0
+let touchStartY = null
+let activationFrame = null
+let resetFrame = null
+
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+function headerHeight() {
+  return document.querySelector('.site-header')?.getBoundingClientRect().height ?? 0
+}
+
+function searchPosition() {
+  if (!searchDock.value) return 0
+  return Math.max(0, window.scrollY + searchDock.value.getBoundingClientRect().top - headerHeight())
+}
+
+function canSnap() {
+  return !snapConsumed && snapEligible && searchDock.value && window.scrollY < searchPosition() - 2
+}
+
+function snapToSearch() {
+  if (!canSnap()) return
+
+  snapConsumed = true
+  snapEligible = false
+  wheelDistance = 0
+  window.scrollTo({
+    top: searchPosition(),
+    behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+  })
+}
+
+function handleWheel(event) {
+  if (!canSnap()) return
+
+  if (event.deltaY <= 0) {
+    wheelDistance = 0
+    return
+  }
+
+  wheelDistance += event.deltaY
+  if (wheelDistance >= SNAP_DISTANCE) {
+    event.preventDefault()
+    snapToSearch()
+  }
+}
+
+function handleTouchStart(event) {
+  touchStartY = event.touches[0]?.clientY ?? null
+}
+
+function handleTouchMove(event) {
+  if (!canSnap() || touchStartY === null) return
+
+  const currentY = event.touches[0]?.clientY
+  if (currentY === undefined) return
+
+  if (touchStartY - currentY >= SNAP_DISTANCE) {
+    event.preventDefault()
+    snapToSearch()
+  }
+}
+
+function isTypingTarget(target) {
+  return target instanceof Element && Boolean(target.closest('input, textarea, select, button, a, [contenteditable]'))
+}
+
+function handleKeydown(event) {
+  if (isTypingTarget(event.target) || event.altKey || event.ctrlKey || event.metaKey) return
+  if (!['ArrowDown', 'PageDown', ' '].includes(event.key) || !canSnap()) return
+
+  event.preventDefault()
+  snapToSearch()
+}
+
+function finishHomeReset(frameCount = 0) {
+  if (window.scrollY <= 2) {
+    snapConsumed = false
+    snapEligible = true
+    return
+  }
+
+  if (frameCount >= 90) return
+  resetFrame = window.requestAnimationFrame(() => finishHomeReset(frameCount + 1))
+}
+
+function handleHomeTopRequest() {
+  if (resetFrame !== null) window.cancelAnimationFrame(resetFrame)
+  snapEligible = false
+  wheelDistance = 0
+  touchStartY = null
+  window.scrollTo({
+    top: 0,
+    behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+  })
+  resetFrame = window.requestAnimationFrame(() => finishHomeReset())
+}
+
+onMounted(() => {
+  window.addEventListener('wheel', handleWheel, { passive: false })
+  window.addEventListener('touchstart', handleTouchStart, { passive: true })
+  window.addEventListener('touchmove', handleTouchMove, { passive: false })
+  window.addEventListener('keydown', handleKeydown)
+  window.addEventListener('yuye-museum:home-top', handleHomeTopRequest)
+
+  activationFrame = window.requestAnimationFrame(() => {
+    activationFrame = window.requestAnimationFrame(() => {
+      snapEligible = window.scrollY <= 2
+    })
+  })
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('wheel', handleWheel)
+  window.removeEventListener('touchstart', handleTouchStart)
+  window.removeEventListener('touchmove', handleTouchMove)
+  window.removeEventListener('keydown', handleKeydown)
+  window.removeEventListener('yuye-museum:home-top', handleHomeTopRequest)
+  if (activationFrame !== null) window.cancelAnimationFrame(activationFrame)
+  if (resetFrame !== null) window.cancelAnimationFrame(resetFrame)
+})
 </script>
 
 <template>
   <div class="home-view">
     <section class="home-hero page-width" aria-labelledby="home-title">
       <div class="home-hero__copy">
-        <p class="eyebrow">AN UNOFFICIAL LIVING ARCHIVE · 001</p>
         <h1 id="home-title">
-          把共同记得的事，<br />
-          <em>一件件收藏起来。</em>
+          <span>把共同记得的事，</span>
+          <span>一件件收藏起来。</span>
         </h1>
-        <p class="home-hero__lede">
-          从一个关键词出发，沿着时间线重新遇见它的出处、变化与回声。这里是榆野博物馆，也是为新朋友留的一盏展灯。
-        </p>
-        <a class="hero-scroll" href="#open-collection">
-          开始参观
-          <span aria-hidden="true">↓</span>
-        </a>
-      </div>
-
-      <div class="home-hero__object" aria-hidden="true">
-        <div class="hero-sun"></div>
-        <div class="hero-plinth">
-          <img :src="publicAsset('logo.svg')" alt="" />
-          <span>YUYE</span>
-        </div>
-        <div class="hero-label">
-          <span>正在展出</span>
-          <strong>共同记忆 / 试展</strong>
-          <small>2026.08 —</small>
-        </div>
+        <p class="home-hero__lede">从一个关键词出发，沿着时间线重新遇见它的出处、变化与回声。</p>
       </div>
     </section>
 
-    <section class="search-dock" aria-label="馆藏搜索">
+    <section ref="searchDock" class="search-dock" aria-label="馆藏搜索">
       <div class="page-width search-dock__inner">
         <SearchBox :keywords="keywords" />
-        <p class="search-dock__hint">当前开放 {{ keywords.length }} 件演示馆藏</p>
       </div>
     </section>
 
     <section id="open-collection" class="collection-section page-width" aria-labelledby="collection-title">
       <div class="section-heading">
-        <div>
-          <p class="eyebrow">OPEN COLLECTION</p>
-          <h2 id="collection-title">开放馆藏</h2>
-        </div>
-        <p>V1 先用两件明确标记的演示馆藏，验证完整阅读路径。真实资料将在逐条核实后入馆。</p>
+        <h2 id="collection-title">部分馆藏</h2>
+        <p>当前开放 {{ keywords.length }} 件演示馆藏</p>
       </div>
 
       <div class="collection-grid">
         <RouterLink
-          v-for="(keyword, index) in keywords"
+          v-for="keyword in keywords"
           :key="keyword.id"
           class="collection-card"
           :to="{ name: 'keyword', params: { id: keyword.id } }"
         >
-          <div class="collection-card__number">NO. {{ String(index + 1).padStart(3, '0') }}</div>
-          <div class="collection-card__art" :class="`collection-card__art--${index + 1}`">
-            <span>{{ keyword.name.slice(0, 1) }}</span>
-            <i aria-hidden="true"></i>
-          </div>
           <div class="collection-card__content">
-            <span class="demo-chip">演示馆藏</span>
             <h3>{{ keyword.name }}</h3>
             <p>{{ keyword.summary }}</p>
             <div class="collection-card__meta">
-              <span>始见于 {{ formatMonth(keyword.startTime) }}</span>
-              <strong>查看时间轴 <span aria-hidden="true">↗</span></strong>
+              <time :datetime="keyword.startTime">始见于 {{ formatMonth(keyword.startTime) }}</time>
             </div>
           </div>
         </RouterLink>
       </div>
-    </section>
-
-    <section class="home-passages page-width" aria-label="继续参观">
-      <RouterLink class="passage-card passage-card--lawn" to="/lawn">
-        <span class="passage-card__index">02 / THE LAWN</span>
-        <div>
-          <h2>去小草坪坐坐</h2>
-          <p>看看留言、回复和被馆主接住的意见。</p>
-        </div>
-        <span class="round-arrow" aria-hidden="true">→</span>
-      </RouterLink>
-      <RouterLink class="passage-card passage-card--about" to="/about">
-        <span class="passage-card__index">03 / ABOUT</span>
-        <div>
-          <h2>读一读建馆说明</h2>
-          <p>关于我们怎样记录，又怎样尊重每一份出处。</p>
-        </div>
-        <span class="round-arrow" aria-hidden="true">→</span>
-      </RouterLink>
     </section>
   </div>
 </template>

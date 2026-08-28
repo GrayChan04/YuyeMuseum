@@ -1,9 +1,8 @@
-<svg width="112" height="96" viewBox="0 0 112 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <title>榆野博物馆 YUYE 房屋标志</title>
-  <path d="M8 42L55.5 8L104 42" stroke="#273823" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M15 40V86H97V40" stroke="#273823" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M28 32L43 51M58 32L43 51M43 51V73" stroke="#273823" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M61 31V47C61 54 66 58 72 58C78 58 83 54 83 47V31" stroke="#6D7E40" stroke-width="5.5" stroke-linecap="round"/>
-  <path d="M61 68H82M61 68V84M61 84H84M61 76H78" stroke="#B17832" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="94" cy="18" r="7" fill="#E5B84F"/>
+<svg width="120" height="96" viewBox="0 0 120 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>由 Y、U、E 构成的榆野博物馆房屋骨架标志</title>
+  <g stroke="#273823" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 13L34 39L60 13M34 39V86"/>
+    <path d="M60 13V31C60 42 68 48 82 48C96 48 105 42 105 31V13"/>
+    <path d="M60 48V86M60 48H104M60 67H95M60 86H105M34 86H105"/>
+  </g>
 </svg>

@@ -26,7 +26,7 @@ router.afterEach((to) => {
     home: '榆野博物馆',
     keyword: '馆藏时间轴｜榆野博物馆',
     lawn: '小草坪｜榆野博物馆',
-    about: '关于本馆｜榆野博物馆',
+    about: '建馆说明｜榆野博物馆',
     'not-found': '展厅未开放｜榆野博物馆',
   }
 

@@ -1,13 +1,38 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import CommentItem from '../components/CommentItem.vue'
 import communityData from '../data/community.json'
 import { formatChinaTime } from '../utils/format'
 
 const activeTab = ref('messages')
+const tabs = ['messages', 'opinions']
+
+const selectTab = async (tab) => {
+  activeTab.value = tab
+  await nextTick()
+  document.getElementById(`${tab}-tab`)?.focus()
+}
+
+const handleTabKeydown = (event) => {
+  const currentIndex = tabs.indexOf(activeTab.value)
+  let nextIndex = currentIndex
+
+  if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % tabs.length
+  else if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + tabs.length) % tabs.length
+  else if (event.key === 'Home') nextIndex = 0
+  else if (event.key === 'End') nextIndex = tabs.length - 1
+  else return
+
+  event.preventDefault()
+  selectTab(tabs[nextIndex])
+}
 
 const messageTree = computed(() => {
-  const items = communityData.messages.map((message) => ({ ...message, children: [] }))
+  const items = communityData.messages.map((message) => ({
+    ...message,
+    isDemo: false,
+    children: [],
+  }))
   const byId = new Map(items.map((message) => [message.id, message]))
   const roots = []
 
@@ -32,13 +57,11 @@ const opinions = computed(() =>
     <section class="lawn-hero">
       <div class="page-width lawn-hero__inner">
         <div>
-          <p class="eyebrow">THE LITTLE LAWN · 002</p>
           <h1>小草坪</h1>
           <p>看完展的人可以在这里坐一会儿。现在是一场安静的试展，留言与意见均为演示内容。</p>
         </div>
         <div class="lawn-hero__scene" aria-hidden="true">
           <i></i><i></i><i></i><i></i><i></i>
-          <span>试开放中</span>
         </div>
       </div>
     </section>
@@ -50,22 +73,26 @@ const opinions = computed(() =>
           type="button"
           role="tab"
           :aria-selected="activeTab === 'messages'"
+          :tabindex="activeTab === 'messages' ? 0 : -1"
           aria-controls="messages-panel"
           @click="activeTab = 'messages'"
+          @keydown="handleTabKeydown"
         >
-          <span>01</span> 留言墙
-          <small>{{ messageTree.length }}</small>
+          留言墙
+          <small>{{ messageTree.length }} 条</small>
         </button>
         <button
           id="opinions-tab"
           type="button"
           role="tab"
           :aria-selected="activeTab === 'opinions'"
+          :tabindex="activeTab === 'opinions' ? 0 : -1"
           aria-controls="opinions-panel"
           @click="activeTab = 'opinions'"
+          @keydown="handleTabKeydown"
         >
-          <span>02</span> 意见箱
-          <small>{{ opinions.length }}</small>
+          意见箱
+          <small>{{ opinions.length }} 条</small>
         </button>
       </div>
 
@@ -75,11 +102,11 @@ const opinions = computed(() =>
           id="messages-panel"
           class="lawn-feed"
           role="tabpanel"
+          tabindex="0"
           aria-labelledby="messages-tab"
         >
           <div class="feed-heading">
             <div>
-              <p class="eyebrow">MESSAGES</p>
               <h2>草坪上的话</h2>
             </div>
             <p>主留言最新优先，对话按发生顺序阅读。</p>
@@ -92,11 +119,11 @@ const opinions = computed(() =>
           id="opinions-panel"
           class="lawn-feed opinion-feed"
           role="tabpanel"
+          tabindex="0"
           aria-labelledby="opinions-tab"
         >
           <div class="feed-heading">
             <div>
-              <p class="eyebrow">OPEN NOTES</p>
               <h2>给馆长的意见</h2>
             </div>
             <p>意见匿名公开，每一条都由馆主认真回复。</p>
@@ -104,7 +131,7 @@ const opinions = computed(() =>
 
           <article v-for="opinion in opinions" :key="opinion.id" class="opinion-card">
             <header>
-              <div><span class="anonymous-avatar">匿</span><strong>匿名访客</strong><span class="micro-badge">演示</span></div>
+              <div><span class="anonymous-avatar">匿</span><strong>匿名访客</strong></div>
               <time :datetime="opinion.createdAt">{{ formatChinaTime(opinion.createdAt) }}</time>
             </header>
             <p class="opinion-card__content">{{ opinion.content }}</p>
@@ -127,7 +154,6 @@ const opinions = computed(() =>
             互动功能筹备中
           </div>
           <template v-if="activeTab === 'messages'">
-            <p class="eyebrow">LEAVE A MESSAGE</p>
             <h2>在草坪留句话</h2>
             <p>未来可以匿名，也可以留下想被大家看见的昵称。所有内容审核后公开。</p>
             <form class="form-stack" @submit.prevent>
@@ -147,7 +173,6 @@ const opinions = computed(() =>
             </form>
           </template>
           <template v-else>
-            <p class="eyebrow">A NOTE TO CURATOR</p>
             <h2>投一张匿名意见</h2>
             <p>意见将始终匿名展示。未来提交后需经审核，馆主回复后公开。</p>
             <form class="form-stack" @submit.prevent>

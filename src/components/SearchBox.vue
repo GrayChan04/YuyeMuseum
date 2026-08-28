@@ -82,7 +82,6 @@ defineExpose({ focus })
 
 <template>
   <div class="museum-search" @focusin="isOpen = true" @focusout="closeLater">
-    <label class="museum-search__label" for="museum-search-input">搜索一件馆藏</label>
     <div class="museum-search__control">
       <svg aria-hidden="true" viewBox="0 0 24 24">
         <circle cx="11" cy="11" r="6.5" />
@@ -94,7 +93,9 @@ defineExpose({ focus })
         v-model="query"
         type="search"
         role="combobox"
-        placeholder="输入关键词或别名，例如：一号展签"
+        aria-label="搜索关键词或别名"
+        aria-autocomplete="list"
+        placeholder="搜索关键词或别名"
         autocomplete="off"
         :aria-expanded="isOpen && hasSearched"
         aria-controls="museum-search-results"
@@ -102,7 +103,6 @@ defineExpose({ focus })
         @input="handleInput"
         @keydown="handleKeydown"
       />
-      <kbd>Enter</kbd>
     </div>
 
     <div v-if="isOpen && hasSearched" id="museum-search-results" class="search-results" role="listbox">

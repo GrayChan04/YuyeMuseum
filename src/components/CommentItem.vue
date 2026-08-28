@@ -28,7 +28,6 @@ const initials = computed(() => (props.message.isAnonymous ? '匿' : props.messa
       <header>
         <div>
           <strong>{{ message.author }}</strong>
-          <span v-if="message.isDemo" class="micro-badge">演示</span>
         </div>
         <time :datetime="message.createdAt">{{ formatChinaTime(message.createdAt) }}</time>
       </header>

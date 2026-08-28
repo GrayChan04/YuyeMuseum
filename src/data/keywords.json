@@ -2,8 +2,11 @@
   "keywords": [
     {
       "id": "label-number-01",
-      "name": "一号展签",
-      "aliases": ["暖黄编号", "展签练习"],
+      "name": "空白展签",
+      "aliases": [
+        "第一张展签",
+        "展签练习"
+      ],
       "summary": "一份用来示范“梗如何被收藏”的虚构展签，从第一次记录走到共同补完。",
       "startTime": "2024-03",
       "intro": "这不是一段真实的粉圈历史，而是一件交互样品：它展示未来每个关键词会如何拥有出处、节点和不断生长的解释。",
@@ -34,7 +37,7 @@
           "images": [
             {
               "src": "demo-archive.svg",
-              "alt": "暖黄色展签与编号一的演示插画",
+              "alt": "暖黄色空白展签的演示插画",
               "source": {
                 "platform": "本馆演示素材",
                 "account": "榆野博物馆",
@@ -90,7 +93,10 @@
     {
       "id": "echo-sample",
       "name": "回声样本",
-      "aliases": ["小草坪回声", "声音样品"],
+      "aliases": [
+        "小草坪回声",
+        "声音样品"
+      ],
       "summary": "一段虚构的声音馆藏，用来展示图片、音频与外部视频出处如何共存。",
       "startTime": "2025-02",
       "intro": "这件演示馆藏关注同一句话如何从声音变成图片，再回到大家的回应里；其中不包含任何真实艺人事件。",
@@ -114,7 +120,7 @@
           "images": [],
           "audio": [
             {
-              "src": "data:audio/wav;base64,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",
+              "src": "demo-echo.wav",
               "title": "回声样本 · 演示提示音",
               "source": {
                 "platform": "本馆演示素材",
@@ -173,6 +179,162 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "folded-map",
+      "name": "折页地图",
+      "aliases": [
+        "路线折页",
+        "参观地图"
+      ],
+      "summary": "一张会随着整理过程反复展开的虚构地图，示范零散线索如何连成一条可读路线。",
+      "startTime": "2025-05",
+      "intro": "这件虚构馆藏用一张折页地图演示：零散线索如何被标记、校对，再整理成新朋友也能跟上的路线。",
+      "origin": {
+        "label": "榆野博物馆 V1.2 路径整理演示",
+        "url": ""
+      },
+      "isDemo": true,
+      "nodes": [
+        {
+          "id": "map-unfolded",
+          "time": "2025-05",
+          "title": "摊开第一面",
+          "summary": "先写下已经确认的起点，不急着填满所有空白。",
+          "body": [
+            "整理从最小的一条已知信息开始：它是什么、从哪里来，以及哪些部分仍然待考。",
+            "地图上的留白不是遗漏，而是提醒后来的人不要用想象补齐证据。"
+          ],
+          "sources": [],
+          "images": [
+            {
+              "src": "demo-folded-map.svg",
+              "alt": "暖黄色折页上分布着几处绿色路线标记的演示插画",
+              "source": {
+                "platform": "本馆演示素材",
+                "account": "榆野博物馆",
+                "label": "折页地图插画",
+                "url": ""
+              }
+            }
+          ],
+          "audio": [],
+          "videos": []
+        },
+        {
+          "id": "map-connected",
+          "time": "2025-08",
+          "title": "把散点连成路线",
+          "summary": "相关片段被放回先后顺序，新朋友才知道从哪里读起。",
+          "body": [
+            "第二步不是增加更多装饰，而是确认片段之间是否真的有关联。",
+            "能够相互印证的线索才连成路线，暂时无法确认的内容继续单独标记。"
+          ],
+          "sources": [
+            {
+              "platform": "本馆演示素材",
+              "account": "榆野博物馆",
+              "label": "信息整理规则样例",
+              "url": ""
+            }
+          ],
+          "images": [],
+          "audio": [],
+          "videos": []
+        },
+        {
+          "id": "map-refolded",
+          "time": "2025-11",
+          "title": "留下一条回程",
+          "summary": "每次更新都保留原来的路径，让修订有迹可循。",
+          "body": [
+            "一张地图可以反复展开，也应该能够折回旧版本。",
+            "真实馆藏更新时，新增说明会成为新的时间节点，不悄悄覆盖已经公开的来路。"
+          ],
+          "sources": [],
+          "images": [],
+          "audio": [],
+          "videos": []
+        }
+      ]
+    },
+    {
+      "id": "lamp-coordinates",
+      "name": "灯下坐标",
+      "aliases": [
+        "展灯坐标",
+        "夜间标记"
+      ],
+      "summary": "一组只存在于试展中的灯光坐标，示范旧记录被复查、照亮和重新说明的过程。",
+      "startTime": "2025-09",
+      "intro": "这件虚构馆藏把每次核实想象成一盏展灯；坐标不代表真实地点，只用于展示记录如何被确认与更新。",
+      "origin": {
+        "label": "榆野博物馆 V1.2 核实流程演示",
+        "url": ""
+      },
+      "isDemo": true,
+      "nodes": [
+        {
+          "id": "lamp-first-mark",
+          "time": "2025-09",
+          "title": "记下第一处微光",
+          "summary": "先保留能够确认的最小事实，再等待更多线索。",
+          "body": [
+            "第一处坐标只记录已经看清的部分，不把模糊印象写成确定结论。",
+            "日期、说法或出处仍不完整时，展签会直接说明“待考”。"
+          ],
+          "sources": [
+            {
+              "platform": "本馆演示素材",
+              "account": "榆野博物馆",
+              "label": "核实流程样例",
+              "url": ""
+            }
+          ],
+          "images": [],
+          "audio": [],
+          "videos": []
+        },
+        {
+          "id": "lamp-calibrated",
+          "time": "2026-01",
+          "title": "校准灯下坐标",
+          "summary": "新的线索先与已有出处互相核对，再决定是否入馆。",
+          "body": [
+            "同一段记忆可能有不同转述，新增材料不会因此直接覆盖旧记录。",
+            "只有时间、语境和来源能够互相对应时，坐标才会被重新标定。"
+          ],
+          "sources": [],
+          "images": [
+            {
+              "src": "demo-lamp-coordinate.svg",
+              "alt": "米色展厅中一束黄绿色灯光照亮坐标点的演示插画",
+              "source": {
+                "platform": "本馆演示素材",
+                "account": "榆野博物馆",
+                "label": "灯下坐标插画",
+                "url": ""
+              }
+            }
+          ],
+          "audio": [],
+          "videos": []
+        },
+        {
+          "id": "lamp-left-on",
+          "time": "2026-04",
+          "title": "把灯留给后来的人",
+          "summary": "说明既要方便理解，也要允许后来的人继续补充与纠正。",
+          "body": [
+            "核实不是把故事封死，而是让每次解释都能找到依据。",
+            "真实资料入馆后，新的出处与修订会继续沿时间轴留下清楚的坐标。"
+          ],
+          "sources": [],
+          "images": [],
+          "audio": [],
+          "videos": []
         }
       ]
     }
