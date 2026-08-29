@@ -91,13 +91,15 @@ onBeforeUnmount(() => {
 
 <template>
   <div v-if="keyword" class="keyword-view">
-    <section class="object-hero">
-      <div class="page-width object-hero__main">
-        <RouterLink class="object-hero__back" to="/">← 返回首页</RouterLink>
-        <h1>{{ keyword.name }}</h1>
-        <p class="object-hero__intro">{{ keyword.intro }}</p>
+    <section class="object-hero page-masthead page-masthead--object">
+      <div class="page-width object-hero__main page-masthead__inner">
+        <div class="object-hero__copy page-masthead__copy">
+          <RouterLink class="object-hero__back" to="/">← 返回首页</RouterLink>
+          <h1>{{ keyword.name }}</h1>
+          <p class="object-hero__intro">{{ keyword.intro }}</p>
+        </div>
 
-        <dl class="object-hero__facts">
+        <dl class="object-hero__facts object-hero__label page-masthead__scene">
           <div>
             <dt>始见于</dt>
             <dd>{{ formatMonth(keyword.startTime) }}</dd>
@@ -149,7 +151,9 @@ onBeforeUnmount(() => {
                 @click="toggleNode(node, $event.currentTarget)"
               >
                 <time class="timeline-list__date" :datetime="node.time">{{ formatMonth(node.time) }}</time>
-                <span class="timeline-list__dot" aria-hidden="true"><i></i></span>
+                <span class="timeline-list__rail" aria-hidden="true">
+                  <span class="timeline-list__dot"><i></i></span>
+                </span>
                 <strong class="timeline-list__title">{{ node.title }}</strong>
               </button>
             </li>

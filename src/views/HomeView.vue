@@ -1,20 +1,28 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import HomeMuseumScene from '../components/HomeMuseumScene.vue'
 import SearchBox from '../components/SearchBox.vue'
 import keywordData from '../data/keywords.json'
 import { formatMonth } from '../utils/format'
 
 const keywords = keywordData.keywords
-const searchDock = ref(null)
+const snapSentinel = ref(null)
 
-const SNAP_DISTANCE = 48
-let snapConsumed = false
-let snapEligible = false
+const SNAP_DISTANCE = 24
+const SNAP_REARM_DISTANCE = 64
+const SNAP_POSITION_TOLERANCE = 3
+let snapArmed = false
+let isSnapping = false
 let wheelDistance = 0
 let touchStartY = null
+let touchDistance = 0
+let touchSnapCandidate = false
+let touchGestureCaptured = false
 let activationFrame = null
-let resetFrame = null
+let resizeFrame = null
+let snappingTimer = null
+let lastSnapTarget = null
 
 function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -24,103 +32,222 @@ function headerHeight() {
   return document.querySelector('.site-header')?.getBoundingClientRect().height ?? 0
 }
 
-function searchPosition() {
-  if (!searchDock.value) return 0
-  return Math.max(0, window.scrollY + searchDock.value.getBoundingClientRect().top - headerHeight())
+function sentinelPosition() {
+  if (!snapSentinel.value) return null
+  return Math.max(0, window.scrollY + snapSentinel.value.getBoundingClientRect().top - headerHeight())
+}
+
+function isInteractiveTarget(target) {
+  return target instanceof Element && Boolean(
+    target.closest('a, button, input, textarea, select, summary, [contenteditable]:not([contenteditable="false"]), [role="button"], [role="link"]'),
+  )
 }
 
 function canSnap() {
-  return !snapConsumed && snapEligible && searchDock.value && window.scrollY < searchPosition() - 2
+  const target = sentinelPosition()
+  if (target === null) return false
+
+  return snapArmed
+    && !isSnapping
+    && window.scrollY <= target - SNAP_REARM_DISTANCE
+}
+
+function scrollInstantly(top) {
+  const root = document.documentElement
+  const previousBehavior = root.style.scrollBehavior
+  root.style.scrollBehavior = 'auto'
+  window.scrollTo({ top, behavior: 'auto' })
+  root.style.scrollBehavior = previousBehavior
+}
+
+function finishSnapping() {
+  if (!isSnapping) return
+
+  isSnapping = false
+  if (snappingTimer !== null) {
+    window.clearTimeout(snappingTimer)
+    snappingTimer = null
+  }
+
+  updateSnapArming()
+}
+
+function startSnappingGuard() {
+  isSnapping = true
+  if (snappingTimer !== null) window.clearTimeout(snappingTimer)
+  snappingTimer = window.setTimeout(finishSnapping, prefersReducedMotion() ? 80 : 900)
 }
 
 function snapToSearch() {
-  if (!canSnap()) return
+  if (!canSnap()) return false
 
-  snapConsumed = true
-  snapEligible = false
+  const target = sentinelPosition()
+  if (target === null) return false
+
+  snapArmed = false
   wheelDistance = 0
-  window.scrollTo({
-    top: searchPosition(),
-    behavior: prefersReducedMotion() ? 'auto' : 'smooth',
-  })
+  touchDistance = 0
+  lastSnapTarget = target
+  startSnappingGuard()
+
+  if (prefersReducedMotion()) scrollInstantly(target)
+  else window.scrollTo({ top: target, behavior: 'smooth' })
+
+  return true
 }
 
 function handleWheel(event) {
-  if (!canSnap()) return
+  if (isInteractiveTarget(event.target) || !canSnap()) {
+    wheelDistance = 0
+    return
+  }
 
   if (event.deltaY <= 0) {
     wheelDistance = 0
     return
   }
 
-  wheelDistance += event.deltaY
+  const multiplier = event.deltaMode === WheelEvent.DOM_DELTA_LINE
+    ? 16
+    : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
+      ? window.innerHeight
+      : 1
+  wheelDistance += event.deltaY * multiplier
   if (wheelDistance >= SNAP_DISTANCE) {
-    event.preventDefault()
-    snapToSearch()
+    if (snapToSearch()) event.preventDefault()
   }
 }
 
 function handleTouchStart(event) {
+  if (event.touches.length !== 1) {
+    handleTouchEnd()
+    return
+  }
+
   touchStartY = event.touches[0]?.clientY ?? null
+  touchDistance = 0
+  touchGestureCaptured = false
+  touchSnapCandidate = touchStartY !== null
+    && !isInteractiveTarget(event.target)
+    && canSnap()
 }
 
 function handleTouchMove(event) {
-  if (!canSnap() || touchStartY === null) return
+  if (event.touches.length !== 1) {
+    handleTouchEnd()
+    return
+  }
+
+  if (touchGestureCaptured) {
+    event.preventDefault()
+    return
+  }
+
+  if (!touchSnapCandidate || !canSnap() || touchStartY === null) return
 
   const currentY = event.touches[0]?.clientY
   if (currentY === undefined) return
 
-  if (touchStartY - currentY >= SNAP_DISTANCE) {
-    event.preventDefault()
-    snapToSearch()
-  }
-}
-
-function isTypingTarget(target) {
-  return target instanceof Element && Boolean(target.closest('input, textarea, select, button, a, [contenteditable]'))
-}
-
-function handleKeydown(event) {
-  if (isTypingTarget(event.target) || event.altKey || event.ctrlKey || event.metaKey) return
-  if (!['ArrowDown', 'PageDown', ' '].includes(event.key) || !canSnap()) return
-
-  event.preventDefault()
-  snapToSearch()
-}
-
-function finishHomeReset(frameCount = 0) {
-  if (window.scrollY <= 2) {
-    snapConsumed = false
-    snapEligible = true
+  const nextDistance = touchStartY - currentY
+  if (nextDistance <= 0) {
+    touchStartY = currentY
+    touchDistance = 0
     return
   }
 
-  if (frameCount >= 90) return
-  resetFrame = window.requestAnimationFrame(() => finishHomeReset(frameCount + 1))
+  event.preventDefault()
+  touchDistance = Math.max(touchDistance, nextDistance)
+  if (touchDistance >= SNAP_DISTANCE) {
+    touchGestureCaptured = snapToSearch()
+    touchSnapCandidate = false
+  }
+}
+
+function handleTouchEnd() {
+  touchStartY = null
+  touchDistance = 0
+  touchSnapCandidate = false
+  touchGestureCaptured = false
+}
+
+function handleKeydown(event) {
+  if (isInteractiveTarget(event.target) || event.altKey || event.ctrlKey || event.metaKey) return
+  if (event.key === ' ' && event.shiftKey) return
+  if (!['ArrowDown', 'PageDown', ' '].includes(event.key) || !canSnap()) return
+
+  if (snapToSearch()) event.preventDefault()
+}
+
+function updateSnapArming() {
+  if (isSnapping) return
+
+  const target = sentinelPosition()
+  if (target === null) {
+    snapArmed = false
+    return
+  }
+
+  lastSnapTarget = target
+  if (window.scrollY <= target - SNAP_REARM_DISTANCE) snapArmed = true
+  else if (window.scrollY >= target - SNAP_POSITION_TOLERANCE) snapArmed = false
+}
+
+function handleScrollEnd() {
+  finishSnapping()
+}
+
+function handleResize() {
+  const previousTarget = lastSnapTarget
+  const wasDocked = previousTarget !== null
+    && Math.abs(window.scrollY - previousTarget) <= SNAP_POSITION_TOLERANCE
+  const wasSnapping = isSnapping
+
+  if (resizeFrame !== null) window.cancelAnimationFrame(resizeFrame)
+  resizeFrame = window.requestAnimationFrame(() => {
+    resizeFrame = window.requestAnimationFrame(() => {
+      resizeFrame = null
+      const nextTarget = sentinelPosition()
+      if (nextTarget === null) return
+
+      lastSnapTarget = nextTarget
+      if (wasDocked || wasSnapping) {
+        scrollInstantly(nextTarget)
+        snapArmed = false
+        if (wasSnapping) finishSnapping()
+        return
+      }
+
+      updateSnapArming()
+    })
+  })
 }
 
 function handleHomeTopRequest() {
-  if (resetFrame !== null) window.cancelAnimationFrame(resetFrame)
-  snapEligible = false
+  snapArmed = false
   wheelDistance = 0
-  touchStartY = null
-  window.scrollTo({
-    top: 0,
-    behavior: prefersReducedMotion() ? 'auto' : 'smooth',
-  })
-  resetFrame = window.requestAnimationFrame(() => finishHomeReset())
+  handleTouchEnd()
+  startSnappingGuard()
+
+  if (prefersReducedMotion()) scrollInstantly(0)
+  else window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 onMounted(() => {
   window.addEventListener('wheel', handleWheel, { passive: false })
   window.addEventListener('touchstart', handleTouchStart, { passive: true })
   window.addEventListener('touchmove', handleTouchMove, { passive: false })
+  window.addEventListener('touchend', handleTouchEnd, { passive: true })
+  window.addEventListener('touchcancel', handleTouchEnd, { passive: true })
   window.addEventListener('keydown', handleKeydown)
+  window.addEventListener('scroll', updateSnapArming, { passive: true })
+  window.addEventListener('scrollend', handleScrollEnd)
+  window.addEventListener('resize', handleResize, { passive: true })
   window.addEventListener('yuye-museum:home-top', handleHomeTopRequest)
 
   activationFrame = window.requestAnimationFrame(() => {
     activationFrame = window.requestAnimationFrame(() => {
-      snapEligible = window.scrollY <= 2
+      activationFrame = null
+      updateSnapArming()
     })
   })
 })
@@ -129,26 +256,44 @@ onBeforeUnmount(() => {
   window.removeEventListener('wheel', handleWheel)
   window.removeEventListener('touchstart', handleTouchStart)
   window.removeEventListener('touchmove', handleTouchMove)
+  window.removeEventListener('touchend', handleTouchEnd)
+  window.removeEventListener('touchcancel', handleTouchEnd)
   window.removeEventListener('keydown', handleKeydown)
+  window.removeEventListener('scroll', updateSnapArming)
+  window.removeEventListener('scrollend', handleScrollEnd)
+  window.removeEventListener('resize', handleResize)
   window.removeEventListener('yuye-museum:home-top', handleHomeTopRequest)
   if (activationFrame !== null) window.cancelAnimationFrame(activationFrame)
-  if (resetFrame !== null) window.cancelAnimationFrame(resetFrame)
+  if (resizeFrame !== null) window.cancelAnimationFrame(resizeFrame)
+  if (snappingTimer !== null) window.clearTimeout(snappingTimer)
 })
 </script>
 
 <template>
   <div class="home-view">
-    <section class="home-hero page-width" aria-labelledby="home-title">
-      <div class="home-hero__copy">
-        <h1 id="home-title">
-          <span>把共同记得的事，</span>
-          <span>一件件收藏起来。</span>
-        </h1>
-        <p class="home-hero__lede">从一个关键词出发，沿着时间线重新遇见它的出处、变化与回声。</p>
+    <section
+      class="home-hero page-masthead page-masthead--home"
+      aria-labelledby="home-title"
+    >
+      <div class="home-hero__inner page-width page-masthead__inner">
+        <div class="home-hero__copy page-masthead__copy">
+          <p class="home-hero__museum-name">榆野博物馆</p>
+          <h1 id="home-title">
+            <span>把共同记得的事，</span>
+            <span>一件件收藏起来。</span>
+          </h1>
+          <p class="home-hero__lede">从一个关键词出发，沿着时间线重新遇见它的出处、变化与回声。</p>
+        </div>
+
+        <div class="home-hero__scene page-masthead__scene">
+          <HomeMuseumScene />
+        </div>
       </div>
+
+      <span ref="snapSentinel" class="home-snap-sentinel" aria-hidden="true"></span>
     </section>
 
-    <section ref="searchDock" class="search-dock" aria-label="馆藏搜索">
+    <section class="search-dock" aria-label="馆藏搜索">
       <div class="page-width search-dock__inner">
         <SearchBox :keywords="keywords" />
       </div>

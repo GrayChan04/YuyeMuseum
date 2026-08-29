@@ -54,13 +54,13 @@ const opinions = computed(() =>
 
 <template>
   <div class="lawn-view">
-    <section class="lawn-hero">
-      <div class="page-width lawn-hero__inner">
-        <div>
-          <h1>小草坪</h1>
+    <section class="page-masthead lawn-hero" aria-labelledby="lawn-title">
+      <div class="page-width page-masthead__inner lawn-hero__inner">
+        <div class="page-masthead__copy lawn-hero__copy">
+          <h1 id="lawn-title">小草坪</h1>
           <p>看完展的人可以在这里坐一会儿。现在是一场安静的试展，留言与意见均为演示内容。</p>
         </div>
-        <div class="lawn-hero__scene" aria-hidden="true">
+        <div class="page-masthead__scene lawn-hero__scene" aria-hidden="true">
           <i></i><i></i><i></i><i></i><i></i>
         </div>
       </div>

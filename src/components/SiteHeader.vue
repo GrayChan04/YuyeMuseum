@@ -17,7 +17,8 @@ function handleHomeClick(event) {
   <header class="site-header">
     <div class="site-header__inner page-width">
       <RouterLink class="brand-link" to="/" aria-label="回到榆野博物馆首页" @click="handleHomeClick">
-        <img :src="publicAsset('logo.svg')" alt="" width="48" height="40" />
+        <img class="brand-link__mark" :src="publicAsset('logo.svg')" alt="" width="48" height="40" />
+        <span class="brand-link__wordmark">榆野博物馆</span>
       </RouterLink>
 
       <nav class="main-nav" aria-label="主要导航">
