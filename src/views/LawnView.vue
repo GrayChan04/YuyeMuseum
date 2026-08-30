@@ -61,7 +61,10 @@ const opinions = computed(() =>
           <p>看完展的人可以在这里坐一会儿。现在是一场安静的试展，留言与意见均为演示内容。</p>
         </div>
         <div class="page-masthead__scene lawn-hero__scene" aria-hidden="true">
-          <i></i><i></i><i></i><i></i><i></i>
+          <span class="lawn-hero__meadow"></span>
+          <i class="lawn-hero__leaf lawn-hero__leaf--left"></i>
+          <i class="lawn-hero__leaf lawn-hero__leaf--middle"></i>
+          <i class="lawn-hero__leaf lawn-hero__leaf--right"></i>
         </div>
       </div>
     </section>

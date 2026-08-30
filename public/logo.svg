@@ -1,16 +1,16 @@
 <svg width="120" height="96" viewBox="0 0 120 96" fill="none" xmlns="http://www.w3.org/2000/svg">
   <title>由 Y、U、E 三个字母构成的榆野博物馆建筑标志</title>
   <g stroke="#273823" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Y：展开的两翼成为博物馆山墙，竖笔成为左侧主柱。 -->
-    <path d="M9 11L33 35L57 11M33 35V84" />
-    <path d="M9 20L33 4L57 20" stroke-width="4" />
+    <!-- 横跨整座字母建筑的人字屋顶。 -->
+    <path d="M7 24L60 4L113 24" />
 
-    <!-- U：两根柱与圆拱共同构成入口。 -->
-    <path d="M64 11V29C64 41 72 47 84 47C96 47 104 41 104 29V11" />
-    <path d="M70 34V14M98 34V14" stroke-width="3" />
+    <!-- Y：左侧建筑骨架。 -->
+    <path d="M13 30L33 49L53 30M33 49V85" />
 
-    <!-- E：三道横笔成为楼层与台阶，竖笔收住立面。 -->
-    <path d="M62 49V84M62 49H105M62 66H96M62 84H107" />
-    <path d="M49 90H111" stroke-width="4" />
+    <!-- U：右上方的圆拱入口。 -->
+    <path d="M64 29V35C64 44 72 49 84 49C96 49 104 44 104 35V29" />
+
+    <!-- E：右下方的立面与楼层。 -->
+    <path d="M62 59V87M62 59H105M62 73H96M62 87H107" />
   </g>
 </svg>
