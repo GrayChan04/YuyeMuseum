@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "validate:content": "node scripts/validate-content.mjs",
+    "prebuild": "npm run validate:content",
     "build": "vite build",
     "preview": "vite preview"
   },

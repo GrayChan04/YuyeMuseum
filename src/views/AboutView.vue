@@ -1,3 +1,13 @@
+<script setup>
+import curatorNotesData from '../data/curator-notes.json'
+
+const curatorNotes = [...curatorNotesData.notes].sort((a, b) => b.date.localeCompare(a.date))
+
+function formatNoteDate(value) {
+  return value.replaceAll('-', '.')
+}
+</script>
+
 <template>
   <div class="about-view">
     <section class="page-masthead about-masthead" aria-labelledby="about-title">
@@ -5,7 +15,7 @@
         <div class="page-masthead__copy about-masthead__copy">
           <h1 id="about-title">建馆说明</h1>
           <p class="about-masthead__purpose">
-            榆野博物馆由粉丝自发建立，试着把散落在榆野色记忆里的关键词、出处与发展脉络一一拾起、整理、陈列，让新朋友由此走近喻言，也读懂喜欢她的人们之间的默契；让一路相伴的老朋友，在这里留住那些曾经鲜亮的回忆。
+            榆野博物馆由粉丝自发建立。我们沿着时间逆溯，辨认出处，整理变化，把那些散落的重新拾起，再放到所有人能够看见的地方。这里为新朋友们补上语境，也为一路同行的老朋友们留下随时可以回看的地方。
           </p>
           <p class="about-masthead__disclaimer">
             本馆与艺人本人及经纪公司无关；馆内素材版权归原作者所有，馆中所藏来自有限的记录与视角，只是共同记忆的一隅，不代表完整故事。
@@ -42,5 +52,17 @@
         <p>用简明介绍、别名说明和时间轴补足背景，不把熟悉粉丝语境当作阅读前提。</p>
       </li>
     </ul>
+
+    <section v-if="curatorNotes.length" class="curator-notes page-width" aria-labelledby="curator-notes-title">
+      <header class="curator-notes__heading">
+        <h2 id="curator-notes-title">馆主的话</h2>
+      </header>
+      <ol class="curator-notes__list">
+        <li v-for="note in curatorNotes" :key="note.id">
+          <time :datetime="note.date">{{ formatNoteDate(note.date) }}</time>
+          <p>{{ note.content }}</p>
+        </li>
+      </ol>
+    </section>
   </div>
 </template>

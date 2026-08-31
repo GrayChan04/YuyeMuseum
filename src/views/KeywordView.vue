@@ -3,7 +3,12 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import SourceLine from '../components/SourceLine.vue'
 import keywordData from '../data/keywords.json'
-import { formatMonth, publicAsset } from '../utils/format'
+import {
+  formatArchiveDate,
+  isLocalPublicAsset,
+  isSafeHttpUrl,
+  publicAsset,
+} from '../utils/format'
 
 const route = useRoute()
 const timelineViewport = ref(null)
@@ -16,6 +21,20 @@ const keyword = computed(() => keywordData.keywords.find((item) => item.id === r
 const nodes = computed(() => [...(keyword.value?.nodes ?? [])].sort((a, b) => a.time.localeCompare(b.time)))
 const selectedNode = computed(() => nodes.value.find((node) => node.id === selectedId.value) ?? null)
 const detailPanelId = computed(() => (keyword.value ? `node-detail-${keyword.value.id}` : undefined))
+const originSource = computed(() => {
+  const origin = keyword.value?.origin
+  if (!origin) return null
+  return {
+    ...origin,
+    id: 'origin',
+    platform: origin.platform || '经典出处',
+    account: origin.account || '',
+  }
+})
+
+function sourceDescription(source = {}) {
+  return [source.platform, source.account, source.label].filter(Boolean).join(' · ')
+}
 
 function nodeButtonId(node) {
   return `timeline-node-${keyword.value.id}-${node.id}`
@@ -102,7 +121,7 @@ onBeforeUnmount(() => {
         <dl class="object-hero__facts object-hero__label page-masthead__scene">
           <div>
             <dt>始见于</dt>
-            <dd>{{ formatMonth(keyword.startTime) }}</dd>
+            <dd>{{ formatArchiveDate(keyword.startTime, keyword.isApproximate) }}</dd>
           </div>
           <div>
             <dt>别名</dt>
@@ -111,16 +130,14 @@ onBeforeUnmount(() => {
           <div>
             <dt>经典出处</dt>
             <dd>
-              <a
-                v-if="keyword.origin?.url"
-                :href="keyword.origin.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                :aria-label="`${keyword.origin.label}（将在新窗口打开）`"
-              >
-                {{ keyword.origin.label }} <span aria-hidden="true">↗</span>
-              </a>
-              <template v-else>{{ keyword.origin?.label || '暂无' }}</template>
+              <SourceLine
+                v-if="originSource"
+                :source="originSource"
+                :keyword-id="keyword.id"
+                node-id="origin"
+                source-id="origin"
+              />
+              <template v-else>暂无</template>
             </dd>
           </div>
         </dl>
@@ -150,7 +167,9 @@ onBeforeUnmount(() => {
                 @focus="revealNodeHorizontally($event.currentTarget)"
                 @click="toggleNode(node, $event.currentTarget)"
               >
-                <time class="timeline-list__date" :datetime="node.time">{{ formatMonth(node.time) }}</time>
+                <time class="timeline-list__date" :datetime="node.time">
+                  {{ formatArchiveDate(node.time, node.isApproximate) }}
+                </time>
                 <span class="timeline-list__rail" aria-hidden="true">
                   <span class="timeline-list__dot"><i></i></span>
                 </span>
@@ -175,23 +194,36 @@ onBeforeUnmount(() => {
         >
           <article class="node-detail__article">
             <header class="node-detail__heading">
-              <time :datetime="selectedNode.time">{{ formatMonth(selectedNode.time) }}</time>
+              <time :datetime="selectedNode.time">
+                {{ formatArchiveDate(selectedNode.time, selectedNode.isApproximate) }}
+              </time>
               <h2 :id="`node-detail-title-${selectedNode.id}`">{{ selectedNode.title }}</h2>
             </header>
 
             <div class="node-detail__body">
-              <p v-for="paragraph in selectedNode.body" :key="paragraph">{{ paragraph }}</p>
+              <p v-for="paragraph in selectedNode.body ?? []" :key="paragraph">{{ paragraph }}</p>
             </div>
 
             <div v-if="selectedNode.images?.length" class="media-stack">
-              <figure v-for="image in selectedNode.images" :key="image.src" class="image-object">
+              <figure v-for="image in selectedNode.images" :key="image.id || image.src" class="image-object">
                 <img :src="publicAsset(image.src)" :alt="image.alt" loading="lazy" decoding="async" />
-                <figcaption><SourceLine :source="image.source" /></figcaption>
+                <figcaption>
+                  <SourceLine
+                    :source="image.source"
+                    :keyword-id="keyword.id"
+                    :node-id="selectedNode.id"
+                    :source-id="image.source?.id"
+                  />
+                </figcaption>
               </figure>
             </div>
 
             <div v-if="selectedNode.audio?.length" class="media-stack">
-              <figure v-for="audio in selectedNode.audio" :key="audio.src" class="audio-object">
+              <figure
+                v-for="audio in selectedNode.audio.filter((item) => isLocalPublicAsset(item.src))"
+                :key="audio.id || audio.src"
+                class="audio-object"
+              >
                 <figcaption>
                   <span class="audio-object__icon" aria-hidden="true">◖))</span>
                   <span><small>馆藏音频</small><strong>{{ audio.title }}</strong></span>
@@ -199,28 +231,43 @@ onBeforeUnmount(() => {
                 <audio controls preload="metadata" :src="publicAsset(audio.src)">
                   你的浏览器不支持音频播放器。
                 </audio>
-                <SourceLine :source="audio.source" />
+                <SourceLine
+                  :source="audio.source"
+                  :keyword-id="keyword.id"
+                  :node-id="selectedNode.id"
+                  :source-id="audio.source?.id"
+                />
               </figure>
             </div>
 
             <div v-if="selectedNode.videos?.length" class="media-stack">
-              <a
-                v-for="video in selectedNode.videos"
-                :key="video.url"
-                class="video-link-card"
-                :href="video.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                :aria-label="`${video.title}，前往 ${video.source.platform} 播放（将在新窗口打开）`"
+              <div
+                v-for="video in selectedNode.videos.filter((item) => isSafeHttpUrl(item.url))"
+                :key="video.id || video.url"
+                class="video-object"
               >
-                <span class="video-link-card__play" aria-hidden="true">▶</span>
-                <span>
-                  <small>前往 {{ video.source.platform }} 播放</small>
-                  <strong>{{ video.title }}</strong>
-                  <em>{{ video.source.account }} · {{ video.source.label }}</em>
-                </span>
-                <i aria-hidden="true">↗</i>
-              </a>
+                <a
+                  class="video-link-card"
+                  :href="video.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  :aria-label="`${video.title}，前往 ${video.source?.platform || '外部平台'} 播放（将在新窗口打开）`"
+                >
+                  <span class="video-link-card__play" aria-hidden="true">▶</span>
+                  <span>
+                    <small>前往 {{ video.source?.platform || '外部平台' }} 播放</small>
+                    <strong>{{ video.title }}</strong>
+                    <em v-if="sourceDescription(video.source)">{{ sourceDescription(video.source) }}</em>
+                  </span>
+                  <i aria-hidden="true">↗</i>
+                </a>
+                <SourceLine
+                  :source="video.source"
+                  :keyword-id="keyword.id"
+                  :node-id="selectedNode.id"
+                  :source-id="video.source?.id"
+                />
+              </div>
             </div>
 
             <div v-if="selectedNode.sources?.length" class="node-sources">
@@ -228,6 +275,9 @@ onBeforeUnmount(() => {
                 v-for="source in selectedNode.sources"
                 :key="`${source.platform}-${source.account}-${source.label}`"
                 :source="source"
+                :keyword-id="keyword.id"
+                :node-id="selectedNode.id"
+                :source-id="source.id"
               />
             </div>
           </article>
@@ -238,8 +288,8 @@ onBeforeUnmount(() => {
 
   <section v-else class="not-found page-width">
     <span class="not-found__number">404</span>
-    <h1>这件馆藏还没有入库。</h1>
-    <p>名称也许写错了，或者它正在等待馆藏员整理。</p>
-    <RouterLink class="button" to="/">返回首页</RouterLink>
+    <h1>当前藏品还未收纳。</h1>
+    <p>你可以回到入口，重新挑选一件馆藏。</p>
+    <RouterLink class="button" to="/">返回博物馆首页</RouterLink>
   </section>
 </template>

@@ -279,10 +279,10 @@ onBeforeUnmount(() => {
         <div class="home-hero__copy page-masthead__copy">
           <p class="home-hero__museum-name">榆野博物馆</p>
           <h1 id="home-title">
-            <span>把共同记得的事，</span>
-            <span>一件件收藏起来。</span>
+            <span>那些掉落的回忆</span>
+            <span>在这里再看一遍</span>
           </h1>
-          <p class="home-hero__lede">从一个关键词出发，沿着时间线重新遇见它的出处、变化与回声。</p>
+          <p class="home-hero__lede">沿着时间逆溯，一点一点拾起、联系，再讲起。</p>
         </div>
 
         <div class="home-hero__scene page-masthead__scene">
@@ -301,8 +301,8 @@ onBeforeUnmount(() => {
 
     <section id="open-collection" class="collection-section page-width" aria-labelledby="collection-title">
       <div class="section-heading">
-        <h2 id="collection-title">部分馆藏</h2>
-        <p>当前开放 {{ keywords.length }} 件演示馆藏</p>
+        <h2 id="collection-title">馆藏</h2>
+        <p>当前收录 {{ keywords.length }} 件馆藏</p>
       </div>
 
       <div class="collection-grid">

@@ -1,7 +1,7 @@
 <script setup>
 import { computed, nextTick, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { formatMonth } from '../utils/format'
+import { formatArchiveDate } from '../utils/format'
 
 const props = defineProps({
   keywords: {
@@ -17,6 +17,9 @@ const activeIndex = ref(0)
 const input = ref(null)
 
 const normalizedQuery = computed(() => query.value.trim().toLocaleLowerCase('zh-CN'))
+const collectionSuggestionKeyword = computed(() =>
+  Array.from(query.value.trim()).slice(0, 50).join(''),
+)
 
 const results = computed(() => {
   if (!normalizedQuery.value) return []
@@ -44,7 +47,22 @@ function choose(keyword) {
   router.push({ name: 'keyword', params: { id: keyword.id } })
 }
 
+function suggestCollection() {
+  if (!collectionSuggestionKeyword.value) return
+
+  isOpen.value = false
+  router.push({
+    name: 'lawn',
+    query: {
+      intent: 'collection-suggestion',
+      keyword: collectionSuggestionKeyword.value,
+    },
+  })
+}
+
 function handleKeydown(event) {
+  if (event.isComposing) return
+
   if (event.key === 'Escape') {
     isOpen.value = false
     return
@@ -105,7 +123,13 @@ defineExpose({ focus })
       />
     </div>
 
-    <div v-if="isOpen && hasSearched" id="museum-search-results" class="search-results" role="listbox">
+    <div
+      v-if="isOpen && hasSearched"
+      id="museum-search-results"
+      class="search-results"
+      :role="results.length ? 'listbox' : 'region'"
+      :aria-label="results.length ? '搜索结果' : '搜索提示'"
+    >
       <template v-if="results.length">
         <button
           v-for="(keyword, index) in results"
@@ -121,17 +145,28 @@ defineExpose({ focus })
         >
           <span>
             <strong>{{ keyword.name }}</strong>
-            <small>{{ keyword.aliases.join(' · ') }}</small>
+            <small v-if="keyword.aliases?.length">{{ keyword.aliases.join(' · ') }}</small>
           </span>
-          <span class="search-result__date">始见于 {{ formatMonth(keyword.startTime) }}</span>
+          <span class="search-result__date">
+            始见于 {{ formatArchiveDate(keyword.startTime, keyword.isApproximate) }}
+          </span>
         </button>
       </template>
       <div v-else class="search-empty" role="status">
         <span aria-hidden="true">⌁</span>
         <p>
-          <strong>这件馆藏还没入库</strong>
-          <small>真实投稿功能开放后，欢迎来补上它的故事。</small>
+          <strong>暂时没有找到『{{ collectionSuggestionKeyword }}』。</strong>
+          <small>或许，你也希望博物馆收藏它？</small>
         </p>
+        <button
+          class="search-empty__action"
+          type="button"
+          @mousedown.prevent
+          @click="suggestCollection"
+        >
+          去小草坪告诉馆主
+          <span aria-hidden="true">→</span>
+        </button>
       </div>
     </div>
   </div>
