@@ -23,23 +23,6 @@
   margin-bottom: 30px;
 }
 
-.lawn-v15__secondary-action {
-  min-height: 46px;
-  border: 1px solid var(--ink);
-  padding: 10px 19px;
-  color: var(--ink);
-  background: transparent;
-  font-weight: 750;
-  cursor: pointer;
-  transition: color 180ms ease, background 180ms ease, transform 180ms ease;
-}
-
-.lawn-v15__secondary-action:hover {
-  color: var(--cream);
-  background: var(--moss-deep);
-  transform: translateY(-2px);
-}
-
 .lawn-v15__toolbar {
   scroll-margin-top: calc(var(--header-offset) + 20px);
   display: flex;

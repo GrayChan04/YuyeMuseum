@@ -2801,7 +2801,7 @@ img {
 .curator-notes__list li {
   display: grid;
   grid-template-columns: 110px minmax(0, 1fr);
-  align-items: start;
+  align-items: center;
   gap: 22px;
   padding: 17px 20px;
   background: rgba(231, 232, 173, 0.45);

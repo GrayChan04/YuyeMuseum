@@ -459,7 +459,7 @@ onBeforeUnmount(() => window.clearTimeout(noticeTimer))
     <section class="lawn-content page-width">
       <div class="lawn-v15__actions" aria-label="在小草坪留下内容">
         <button class="button" type="button" @click="openDrawer('message')">留下一棵小草</button>
-        <button class="lawn-v15__secondary-action" type="button" @click="openDrawer('opinion')">
+        <button class="button" type="button" @click="openDrawer('opinion')">
           留下一棵意见小草
         </button>
       </div>
