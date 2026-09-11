@@ -31,6 +31,19 @@ npm run preview
 
 ## 更新馆藏内容
 
+对话式收集见 [馆藏收集流程](Inputs/馆藏收集流程.md)。可以说“收集馆藏：名词”或“补充馆藏：名词”，研究草稿保存在被 Git 忽略的 `Research/`；这不是定时爬虫，需要在可访问来源的会话中启动。模板见 [馆藏研究模板](Inputs/馆藏研究模板.json)。
+
+馆主审阅、明确批准节点及缺图例外后，先预览再写入：
+
+```bash
+npm run validate:research -- Research/馆藏ID.json
+npm run export:collection -- Research/馆藏ID.json
+npm run export:collection -- Research/馆藏ID.json --write
+npm run test:research
+```
+
+时间轴详情支持出处截图、点击放大和缺图说明。“补充凭证”仍进入不发送、不保存的意见原型。研究记录不会自动发布；脚本检查批准记录，但不能代替馆主判断真实性。
+
 关键词和时间轴位于 `src/data/keywords.json`，公开小草位于 `src/data/community.json`，馆主的话位于 `src/data/curator-notes.json`。三个文件默认允许为空；录入真实内容前请阅读内容录入指南。
 
 每次构建会先运行零依赖内容检查。也可以单独运行：

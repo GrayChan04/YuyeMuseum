@@ -367,6 +367,14 @@ function buildSourceFeedback(query) {
 
 function handleIntent(query) {
   const intent = queryString(query.intent)
+  if (intent === 'evidence-supplement') {
+    const keyword = keywordData.keywords.find(k => k.id === queryString(query.keywordId))
+    const node = keyword?.nodes.find(n => n.id === queryString(query.nodeId))
+    if (!node) return
+    activeFilter.value = 'opinion'
+    openDrawer('opinion', { presetContent: `我想为馆藏「${keyword.name}」的节点「${node.title}」补充出处凭证。`, presetReadonly: true })
+    return
+  }
   if (intent === 'collection-suggestion') {
     const keyword = [...queryString(query.keyword).trim()].slice(0, 50).join('')
     if (!keyword) return

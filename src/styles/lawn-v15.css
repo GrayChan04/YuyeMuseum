@@ -1130,6 +1130,8 @@
 }
 
 .lawn-lightbox__figure {
+  grid-column: 2;
+  grid-row: 1;
   min-width: 0;
   max-width: min(100%, 1100px);
   max-height: 100%;

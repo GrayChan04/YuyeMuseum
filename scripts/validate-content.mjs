@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url))
 const repositoryRoot = path.resolve(scriptDirectory, '..')
 const publicDirectory = path.join(repositoryRoot, 'public')
-const dataDirectory = path.join(repositoryRoot, 'src', 'data')
+const dataDirectory = process.env.YUYE_VALIDATE_DATA_DIR || path.join(repositoryRoot, 'src', 'data')
 
 const errors = []
 const keywordIds = new Set()
@@ -331,6 +331,28 @@ function validateVideo(video, location) {
 
 function validateNode(node, location, nodeIds) {
   if (!requireRecord(node, location)) return
+
+  if (node.evidence !== undefined) {
+    const evidence = node.evidence
+    if (requireRecord(evidence, `${location}.evidence`)) {
+      if (!['available', 'missing'].includes(evidence.status)) fail(location, '凭证状态无效')
+      if (requireArray(evidence.screenshots, `${location}.evidence.screenshots`)) {
+        if (evidence.status === 'available' && !evidence.screenshots.length) fail(location, '必须提供出处截图')
+        if (evidence.status === 'missing' && (evidence.screenshots.length || evidence.missingApproved !== true)) fail(location, '缺图必须由馆主确认且不能含截图')
+        evidence.screenshots.forEach((shot, index) => {
+          const label = `${location}.evidence.screenshots[${index}]`
+          if (!requireRecord(shot, label)) return
+          validatePublicFile(shot.src, `${label}.src`, IMAGE_EXTENSIONS)
+          requireString(shot.alt, `${label}.alt`)
+          validateFullDate(shot.capturedAt, `${label}.capturedAt`)
+          if (!['researcher', 'curator'].includes(shot.providedBy)) fail(label, '需注明截图提供方式')
+          if (!['post', 'video'].includes(shot.medium)) fail(label, '截图媒介无效')
+          if (shot.medium === 'video' && !/^\d{2,}:\d{2}(?::\d{2})?$/.test(shot.timecode || '')) fail(label, '视频截图需要时间码')
+          if (!node.sources?.some(source => source.id === shot.sourceId)) fail(label, '截图来源引用不存在')
+        })
+      }
+    }
+  }
 
   validateId(node.id, `${location}.id`, nodeIds)
   validateFlexibleDate(node.time, `${location}.time`)

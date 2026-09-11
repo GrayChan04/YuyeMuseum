@@ -2379,7 +2379,7 @@ img {
   }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 480px) {
   :root {
     --header-height: 94px;
     --gutter: 12px;
@@ -2418,7 +2418,9 @@ img {
     padding: 4px 0;
     font-size: 0.65rem;
   }
+}
 
+@media (max-width: 360px) {
   .home-hero__copy h1 span {
     white-space: normal;
   }

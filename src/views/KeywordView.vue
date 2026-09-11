@@ -2,6 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import SourceLine from '../components/SourceLine.vue'
+import NodeEvidence from '../components/NodeEvidence.vue'
 import keywordData from '../data/keywords.json'
 import {
   formatArchiveDate,
@@ -203,6 +204,8 @@ onBeforeUnmount(() => {
             <div class="node-detail__body">
               <p v-for="paragraph in selectedNode.body ?? []" :key="paragraph">{{ paragraph }}</p>
             </div>
+
+            <NodeEvidence :key="selectedNode.id" :node="selectedNode" :keyword-id="keyword.id" />
 
             <div v-if="selectedNode.images?.length" class="media-stack">
               <figure v-for="image in selectedNode.images" :key="image.id || image.src" class="image-object">

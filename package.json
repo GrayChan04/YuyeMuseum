@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite",
     "validate:content": "node scripts/validate-content.mjs",
+    "validate:research": "node scripts/research.mjs validate",
+    "export:collection": "node scripts/research.mjs export",
+    "test:research": "node --test scripts/research.test.mjs",
     "prebuild": "npm run validate:content",
     "build": "vite build",
     "preview": "vite preview"

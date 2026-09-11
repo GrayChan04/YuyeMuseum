@@ -23,7 +23,7 @@ function handleHomeClick(event) {
 
       <nav class="main-nav" aria-label="主要导航">
         <RouterLink to="/" @click="handleHomeClick">首页</RouterLink>
-        <RouterLink to="/lawn">小草坪</RouterLink>
+        <RouterLink to="/lawn">小草坪（建设中）</RouterLink>
         <RouterLink to="/about">建馆说明</RouterLink>
       </nav>
     </div>

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "collection-id",
+  "name": "待收集名词",
+  "scope": "先明确收集对象及不包含的内容",
+  "aliases": [],
+  "searchedAt": null,
+  "searchLog": [],
+  "sources": [],
+  "candidates": [],
+  "decisions": [],
+  "questions": [],
+  "publication": { "review": "pending", "decisionId": null, "keyword": null }
+}
