@@ -3,7 +3,9 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import SourceLine from '../components/SourceLine.vue'
 import NodeEvidence from '../components/NodeEvidence.vue'
+import CollectionSourceList from '../components/CollectionSourceList.vue'
 import keywordData from '../data/keywords.json'
+import { keywordList } from '../utils/contentData'
 import {
   formatArchiveDate,
   isLocalPublicAsset,
@@ -18,7 +20,7 @@ const selectedId = ref(null)
 const canScrollLeft = ref(false)
 const canScrollRight = ref(false)
 
-const keyword = computed(() => keywordData.keywords.find((item) => item.id === route.params.id))
+const keyword = computed(() => keywordList(keywordData).find((item) => item.id === route.params.id))
 const nodes = computed(() => [...(keyword.value?.nodes ?? [])].sort((a, b) => a.time.localeCompare(b.time)))
 const selectedNode = computed(() => nodes.value.find((node) => node.id === selectedId.value) ?? null)
 const detailPanelId = computed(() => (keyword.value ? `node-detail-${keyword.value.id}` : undefined))
@@ -120,6 +122,9 @@ onBeforeUnmount(() => {
         </div>
 
         <dl class="object-hero__facts object-hero__label page-masthead__scene">
+          <div v-if="keyword.coverImage" class="object-hero__cover">
+            <img :src="keyword.coverImage" :alt="`${keyword.name}封面`" decoding="async" />
+          </div>
           <div>
             <dt>始见于</dt>
             <dd>{{ formatArchiveDate(keyword.startTime, keyword.isApproximate) }}</dd>
@@ -128,17 +133,21 @@ onBeforeUnmount(() => {
             <dt>别名</dt>
             <dd>{{ keyword.aliases?.length ? keyword.aliases.join(' / ') : '暂无' }}</dd>
           </div>
-          <div>
+          <div v-if="originSource">
             <dt>经典出处</dt>
             <dd>
               <SourceLine
-                v-if="originSource"
                 :source="originSource"
                 :keyword-id="keyword.id"
                 node-id="origin"
                 source-id="origin"
               />
-              <template v-else>暂无</template>
+            </dd>
+          </div>
+          <div v-if="keyword.tags.length">
+            <dt>标签</dt>
+            <dd class="object-hero__tags">
+              <span v-for="tag in keyword.tags" :key="tag">{{ tag }}</span>
             </dd>
           </div>
         </dl>
@@ -205,7 +214,18 @@ onBeforeUnmount(() => {
               <p v-for="paragraph in selectedNode.body ?? []" :key="paragraph">{{ paragraph }}</p>
             </div>
 
-            <NodeEvidence :key="selectedNode.id" :node="selectedNode" :keyword-id="keyword.id" />
+            <NodeEvidence
+              v-if="!selectedNode.templateSources"
+              :key="selectedNode.id"
+              :node="selectedNode"
+              :keyword-id="keyword.id"
+            />
+
+            <CollectionSourceList
+              v-if="selectedNode.templateSources"
+              :node="selectedNode"
+              :keyword-id="keyword.id"
+            />
 
             <div v-if="selectedNode.images?.length" class="media-stack">
               <figure v-for="image in selectedNode.images" :key="image.id || image.src" class="image-object">
@@ -273,7 +293,7 @@ onBeforeUnmount(() => {
               </div>
             </div>
 
-            <div v-if="selectedNode.sources?.length" class="node-sources">
+            <div v-if="selectedNode.sources?.length && !selectedNode.templateSources" class="node-sources">
               <SourceLine
                 v-for="source in selectedNode.sources"
                 :key="`${source.platform}-${source.account}-${source.label}`"

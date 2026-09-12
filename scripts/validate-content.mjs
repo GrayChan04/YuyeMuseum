@@ -378,6 +378,71 @@ function validateNode(node, location, nodeIds) {
   })
 }
 
+function validateDataAsset(value, location, allowedExtensions) {
+  if (!requireString(value, location, { allowEmpty: true }) || !value) return
+  const normalized = value.replace(/^\/?YuyeMuseum[\\/]src[\\/]data[\\/]/i, 'src/data/').replaceAll('\\', '/')
+  if (!normalized.startsWith('src/data/')) {
+    validatePublicFile(value, location, allowedExtensions)
+    return
+  }
+  const absolutePath = path.resolve(repositoryRoot, normalized)
+  const extension = path.extname(absolutePath).toLowerCase()
+  if (!allowedExtensions.has(extension)) fail(location, `文件类型不受支持：${extension || '无扩展名'}`)
+  if (!fs.existsSync(absolutePath) || !fs.statSync(absolutePath).isFile()) {
+    fail(location, `找不到 ${normalized}`)
+  }
+}
+
+function validateTemplateSource(source, location) {
+  if (!requireRecord(source, location)) return
+
+  const exists = source.isexist === true || source.isexist === 'true'
+  if (!(typeof source.isexist === 'boolean' || source.isexist === 'true' || source.isexist === 'false')) {
+    fail(`${location}.isexist`, '必须是 true 或 false')
+  }
+  requireString(source.caption, `${location}.caption`, { allowEmpty: true })
+  const format = source.format === 'text' ? 'picture' : source.format
+  if (!['picture', 'video', 'audio'].includes(format)) fail(`${location}.format`, '只能是 picture、video 或 audio')
+  requireString(source.url, `${location}.url`, { allowEmpty: true })
+  requireString(source.screenshotpath, `${location}.screenshotpath`, { allowEmpty: true })
+
+  if (exists && source.url) validateHttpUrl(source.url, `${location}.url`)
+  if (!exists && source.screenshotpath) {
+    validateDataAsset(source.screenshotpath, `${location}.screenshotpath`, IMAGE_EXTENSIONS)
+  }
+}
+
+function validateTemplateKeyword(name, keyword, location) {
+  if (!requireRecord(keyword, location)) return
+  requireString(name, `${location}.name`)
+  validateStringArray(keyword.aliases, `${location}.aliases`)
+  requireString(keyword.description, `${location}.description`, { allowEmpty: true })
+  validateDataAsset(keyword.coverimagepath, `${location}.coverimagepath`, IMAGE_EXTENSIONS)
+  validateStringArray(keyword.tags, `${location}.tags`)
+  validateFlexibleDate(keyword.startdate, `${location}.startdate`)
+
+  if (!requireArray(keyword.nodes, `${location}.nodes`)) return
+  if (keyword.nodes.length === 0) fail(`${location}.nodes`, '正式馆藏至少需要一个时间节点')
+  keyword.nodes.forEach((node, index) => {
+    const nodeLocation = `${location}.nodes[${index}]`
+    if (!requireRecord(node, nodeLocation)) return
+    validateFlexibleDate(node.date, `${nodeLocation}.date`)
+    requireString(node.title, `${nodeLocation}.title`)
+    requireString(node.description, `${nodeLocation}.description`, { allowEmpty: true })
+    if (requireArray(node.sources, `${nodeLocation}.sources`)) {
+      node.sources.forEach((source, sourceIndex) => validateTemplateSource(source, `${nodeLocation}.sources[${sourceIndex}]`))
+    }
+  })
+}
+
+function templateEntry(keyword, location) {
+  if (!isRecord(keyword)) return null
+  const entry = Object.entries(keyword).find(([, value]) => isRecord(value) && (
+    value.startdate !== undefined || value.coverimagepath !== undefined || value.nodes !== undefined
+  ))
+  return entry ? { name: entry[0], value: entry[1], location: `${location}.${entry[0]}` } : null
+}
+
 function validateKeyword(keyword, location) {
   if (!requireRecord(keyword, location)) return
 
@@ -402,9 +467,16 @@ function validateKeyword(keyword, location) {
 }
 
 function validateKeywords(data) {
-  if (!requireRecord(data, 'src/data/keywords.json')) return
-  if (!requireArray(data.keywords, 'keywords')) return
-  data.keywords.forEach((keyword, index) => validateKeyword(keyword, `keywords[${index}]`))
+  const items = Array.isArray(data) ? data : data?.keywords
+  if (!Array.isArray(items)) {
+    fail('src/data/keywords.json', '必须是馆藏数组或包含 keywords 数组的对象')
+    return
+  }
+  items.forEach((keyword, index) => {
+    const compact = templateEntry(keyword, `keywords[${index}]`)
+    if (compact) validateTemplateKeyword(compact.name, compact.value, compact.location)
+    else validateKeyword(keyword, `keywords[${index}]`)
+  })
 }
 
 function validatePublishedAttachments(item, location) {
@@ -530,13 +602,16 @@ function validateCommunity(data) {
 }
 
 function validateCuratorNotes(data) {
-  if (!requireRecord(data, 'src/data/curator-notes.json')) return
-  if (!requireArray(data.notes, 'notes')) return
+  const items = Array.isArray(data) ? data : data?.notes
+  if (!Array.isArray(items)) {
+    fail('src/data/curator-notes.json', '必须是馆主的话数组或包含 notes 数组的对象')
+    return
+  }
 
-  data.notes.forEach((note, index) => {
+  items.forEach((note, index) => {
     const location = `notes[${index}]`
     if (!requireRecord(note, location)) return
-    validateId(note.id, `${location}.id`, noteIds)
+    if (note.id !== undefined) validateId(note.id, `${location}.id`, noteIds)
     validateFullDate(note.date, `${location}.date`)
     requireString(note.content, `${location}.content`)
   })
@@ -593,8 +668,10 @@ if (errors.length) {
   errors.forEach((error) => console.error(`- ${error}`))
   process.exitCode = 1
 } else {
+  const keywordCount = Array.isArray(keywords) ? keywords.length : (keywords?.keywords?.length ?? 0)
+  const noteCount = Array.isArray(curatorNotes) ? curatorNotes.length : (curatorNotes?.notes?.length ?? 0)
   console.log(
-    `内容校验通过：${keywords.keywords.length} 件馆藏、${community.messages.length} 条留言或回复、` +
-      `${community.opinions.length} 条意见、${curatorNotes.notes.length} 则馆主的话。`,
+    `内容校验通过：${keywordCount} 件馆藏、${community.messages.length} 条留言或回复、` +
+      `${community.opinions.length} 条意见、${noteCount} 则馆主的话。`,
   )
 }

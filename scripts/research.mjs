@@ -9,6 +9,59 @@ const [command, filename, flag] = process.argv.slice(2)
 const check = (condition, message) => { if (!condition) throw new Error(message) }
 const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const nonempty = value => typeof value === 'string' && value.trim().length > 0
+const isHttp = value => typeof value === 'string' && /^https?:\/\//i.test(value.trim())
+
+function compactSource(source, format = 'picture', fallbackScreenshot = '') {
+  const unavailable = ['unavailable', 'missing'].includes(source?.status) || source?.isexist === false
+  const screenshot = source?.archiveAsset || fallbackScreenshot || ''
+  return {
+    isexist: !unavailable,
+    caption: source?.label || source?.caption || '',
+    format: format === 'text' ? 'picture' : format,
+    url: !unavailable && isHttp(source?.url) ? source.url : '',
+    screenshotpath: screenshot,
+  }
+}
+
+function compactKeyword(research, approved, previousRecord = {}) {
+  const publicationKeyword = research.publication.keyword
+  const previousNodes = Array.isArray(previousRecord.nodes) ? previousRecord.nodes : []
+  const nodeByKey = new Map(previousNodes.map(node => [`${node.date}|${node.title}`, node]))
+
+  for (const candidate of approved) {
+    const display = candidate.displayNode
+    const screenshots = display.evidence?.screenshots || []
+    const sources = []
+    const appendSource = (source, format) => {
+      if (!source) return
+      const screenshot = screenshots.find(item => item.sourceId === source.id)?.src || ''
+      sources.push(compactSource(source, format || source.format || 'picture', screenshot))
+    }
+    ;(display.sources || []).forEach(source => appendSource(source))
+    ;(display.images || []).forEach(image => appendSource(image.source, 'picture'))
+    ;(display.audio || []).forEach(audio => appendSource(audio.source, 'audio'))
+    ;(display.videos || []).forEach(video => appendSource(video.source, 'video'))
+
+    const node = {
+      date: display.time,
+      title: display.title,
+      description: Array.isArray(display.body) && display.body.length
+        ? display.body.join('\n')
+        : (display.summary || ''),
+      sources,
+    }
+    nodeByKey.set(`${node.date}|${node.title}`, node)
+  }
+
+  return {
+    aliases: publicationKeyword.aliases || [],
+    description: publicationKeyword.description || publicationKeyword.intro || publicationKeyword.summary || '',
+    coverimagepath: publicationKeyword.coverimagepath || '',
+    tags: publicationKeyword.tags || [],
+    startdate: publicationKeyword.startdate || publicationKeyword.startTime || '',
+    nodes: [...nodeByKey.values()].sort((a, b) => String(a.date).localeCompare(String(b.date))),
+  }
+}
 try {
   check(['validate', 'export'].includes(command) && filename && (!flag || flag === '--write'), '用法: research.mjs validate|export Research/ID.json [--write]')
   const research = JSON.parse(fs.readFileSync(filename, 'utf8'))
@@ -43,7 +96,14 @@ try {
       check(candidate.displayNode.evidence, `${candidate.id}: 缺少凭证区域`)
       check(candidate.claims.length > 0 && candidate.sourceIds.length > 0, `${candidate.id}: 获批节点必须保留说法与来源`)
       check(Array.isArray(candidate.displayNode.sources) && candidate.displayNode.sources.length > 0 && candidate.displayNode.sources.every(s => candidate.sourceIds.some(id => research.sources.find(r => r.id === id)?.url === s.url)), `${candidate.id}: 展示来源未在研究来源中记录`)
-      if (candidate.displayNode.evidence.status === 'missing') check(research.decisions.some(d => decisionFor(d.id, candidate.id, 'allow-missing')), `${candidate.id}: 缺少馆主缺图放行记录`)
+      check(['available', 'missing'].includes(candidate.displayNode.evidence.status), `${candidate.id}: 凭证状态无效`)
+      if (candidate.displayNode.evidence.status === 'available') {
+        check(Array.isArray(candidate.displayNode.evidence.screenshots) && candidate.displayNode.evidence.screenshots.length > 0, `${candidate.id}: 获批节点必须提供出处截图`)
+      }
+      if (candidate.displayNode.evidence.status === 'missing') {
+        check(candidate.displayNode.evidence.missingApproved === true, `${candidate.id}: 缺图凭证尚未获得馆主放行`)
+        check(research.decisions.some(d => decisionFor(d.id, candidate.id, 'allow-missing')), `${candidate.id}: 缺少馆主缺图放行记录`)
+      }
     }
   }
   if (command === 'validate') { console.log(`研究校验通过：${research.name}，${research.candidates.length} 个候选节点。`); process.exit(0) }
@@ -53,15 +113,23 @@ try {
   check(Array.isArray(publication.keyword.nodes) && publication.keyword.nodes.length === 0, 'publication.keyword.nodes 必须为空，由候选生成')
   const dataPath = path.join(root, 'src/data/keywords.json')
   const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'))
-  const previous = data.keywords.find(k => k.id === research.id)
-  const nodes = new Map((previous?.nodes || []).map(n => [n.id, n]))
+  const keywordList = Array.isArray(data) ? data : data.keywords
+  check(Array.isArray(keywordList), '正式馆藏数据必须是数组或包含 keywords 数组的对象')
   const approved = research.candidates.filter(c => c.review === 'approved')
   check(approved.length > 0, '没有获批节点')
-  for (const candidate of approved) nodes.set(candidate.id, { ...candidate.displayNode, uncertainty: candidate.uncertainty || '' })
-  const keyword = { ...publication.keyword, nodes: [...nodes.values()].sort((a, b) => a.time.localeCompare(b.time)) }
-  const index = data.keywords.findIndex(k => k.id === research.id)
-  if (index < 0) data.keywords.push(keyword)
-  else data.keywords[index] = keyword
+  const compactStorage = Array.isArray(data)
+  const compactEntryIndex = compactStorage
+    ? keywordList.findIndex(entry => Object.prototype.hasOwnProperty.call(entry || {}, research.name))
+    : -1
+  const previousCompact = compactEntryIndex >= 0 ? keywordList[compactEntryIndex][research.name] : {}
+  const keyword = compactStorage
+    ? { [research.name]: compactKeyword(research, approved, previousCompact) }
+    : { ...publication.keyword, nodes: approved.map(candidate => ({ ...candidate.displayNode, uncertainty: candidate.uncertainty || '' })) }
+  const index = compactStorage
+    ? compactEntryIndex
+    : keywordList.findIndex(k => k.id === research.id)
+  if (index < 0) keywordList.push(keyword)
+  else keywordList[index] = keyword
   const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'yuye-validation-'))
   try {
     fs.writeFileSync(path.join(temp, 'keywords.json'), JSON.stringify(data, null, 2) + '\n')

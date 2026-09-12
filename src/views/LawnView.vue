@@ -8,6 +8,7 @@ import LawnLightbox from '../components/LawnLightbox.vue'
 import SafeText from '../components/SafeText.vue'
 import communityData from '../data/community.json'
 import keywordData from '../data/keywords.json'
+import { keywordList } from '../utils/contentData'
 import { formatChinaTime, publicAsset } from '../utils/format'
 
 const route = useRoute()
@@ -342,7 +343,7 @@ function buildSourceFeedback(query) {
   const keywordId = queryString(query.keywordId)
   const nodeId = queryString(query.nodeId)
   const sourceId = queryString(query.sourceId)
-  const keyword = (keywordData.keywords ?? []).find((item) => String(item.id) === keywordId)
+  const keyword = keywordList(keywordData).find((item) => String(item.id) === keywordId)
   const node = keyword?.nodes?.find((item) => String(item.id) === nodeId)
   if (keyword && nodeId === 'origin' && sourceId === 'origin') {
     return `馆藏「${keyword.name}」的经典出处链接可能已失效，请馆主核对。`
@@ -368,7 +369,7 @@ function buildSourceFeedback(query) {
 function handleIntent(query) {
   const intent = queryString(query.intent)
   if (intent === 'evidence-supplement') {
-    const keyword = keywordData.keywords.find(k => k.id === queryString(query.keywordId))
+    const keyword = keywordList(keywordData).find(k => k.id === queryString(query.keywordId))
     const node = keyword?.nodes.find(n => n.id === queryString(query.nodeId))
     if (!node) return
     activeFilter.value = 'opinion'

@@ -1,7 +1,8 @@
 <script setup>
 import curatorNotesData from '../data/curator-notes.json'
+import { curatorNoteList } from '../utils/contentData'
 
-const curatorNotes = [...curatorNotesData.notes].sort((a, b) => b.date.localeCompare(a.date))
+const curatorNotes = [...curatorNoteList(curatorNotesData)].sort((a, b) => b.date.localeCompare(a.date))
 
 function formatNoteDate(value) {
   return value.replaceAll('-', '.')
@@ -58,7 +59,7 @@ function formatNoteDate(value) {
         <h2 id="curator-notes-title">馆主的话</h2>
       </header>
       <ol class="curator-notes__list">
-        <li v-for="note in curatorNotes" :key="note.id">
+        <li v-for="(note, index) in curatorNotes" :key="note.id || `${note.date}-${index}`">
           <time :datetime="note.date">{{ formatNoteDate(note.date) }}</time>
           <p>{{ note.content }}</p>
         </li>

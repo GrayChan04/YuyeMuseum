@@ -2,12 +2,10 @@
 import { computed, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import LawnLightbox from './LawnLightbox.vue'
-import SourceLine from './SourceLine.vue'
 import { publicAsset } from '../utils/format'
 const props = defineProps({ node: { type: Object, required: true }, keywordId: { type: String, required: true } })
 const active = ref(null)
 const images = computed(() => (props.node.evidence?.screenshots || []).map(s => ({ ...s, src: publicAsset(s.src) })))
-const sourceFor = shot => props.node.sources?.find(s => s.id === shot.sourceId)
 </script>
 
 <template>
@@ -19,8 +17,8 @@ const sourceFor = shot => props.node.sources?.find(s => s.id === shot.sourceId)
           <img :src="shot.src" :alt="shot.alt" loading="lazy" />
         </button>
         <figcaption>
-          <SourceLine v-if="sourceFor(shot)" :source="sourceFor(shot)" :keyword-id="keywordId" :node-id="node.id" />
-          <p>发布：{{ shot.publishedAt || '时间待核实' }} · 截图采集：{{ shot.capturedAt }}<span v-if="shot.timecode"> · 视频时间码 {{ shot.timecode }}</span><span v-if="shot.providedBy === 'curator'"> · 馆主提供</span></p>
+          <p>{{ shot.alt }}</p>
+          <p>发布：{{ shot.publishedAt || '时间待核实' }} · 截图采集：{{ shot.capturedAt || '时间待记录' }}<span v-if="shot.timecode"> · 视频时间码 {{ shot.timecode }}</span><span v-if="shot.providedBy === 'curator'"> · 馆主提供</span></p>
         </figcaption>
       </figure>
     </template>

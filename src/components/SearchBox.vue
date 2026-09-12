@@ -25,7 +25,7 @@ const results = computed(() => {
   if (!normalizedQuery.value) return []
 
   return props.keywords.filter((keyword) => {
-    const searchable = [keyword.name, ...(keyword.aliases ?? [])]
+    const searchable = [keyword.name, ...(keyword.aliases ?? []), ...(keyword.tags ?? [])]
     return searchable.some((value) => value.toLocaleLowerCase('zh-CN').includes(normalizedQuery.value))
   })
 })

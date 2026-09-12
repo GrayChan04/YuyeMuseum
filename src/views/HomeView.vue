@@ -4,9 +4,10 @@ import { RouterLink } from 'vue-router'
 import HomeMuseumScene from '../components/HomeMuseumScene.vue'
 import SearchBox from '../components/SearchBox.vue'
 import keywordData from '../data/keywords.json'
+import { keywordList } from '../utils/contentData'
 import { formatMonth } from '../utils/format'
 
-const keywords = keywordData.keywords
+const keywords = keywordList(keywordData)
 const snapSentinel = ref(null)
 
 const SNAP_DISTANCE = 24
@@ -312,9 +313,15 @@ onBeforeUnmount(() => {
           class="collection-card"
           :to="{ name: 'keyword', params: { id: keyword.id } }"
         >
+          <div v-if="keyword.coverImage" class="collection-card__cover">
+            <img :src="keyword.coverImage" :alt="`${keyword.name}封面`" loading="lazy" decoding="async" />
+          </div>
           <div class="collection-card__content">
             <h3>{{ keyword.name }}</h3>
             <p>{{ keyword.summary }}</p>
+            <ul v-if="keyword.tags.length" class="collection-card__tags" aria-label="馆藏标签">
+              <li v-for="tag in keyword.tags" :key="tag">{{ tag }}</li>
+            </ul>
             <div class="collection-card__meta">
               <time :datetime="keyword.startTime">始见于 {{ formatMonth(keyword.startTime) }}</time>
             </div>

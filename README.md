@@ -44,7 +44,7 @@ npm run test:research
 
 时间轴详情支持出处截图、点击放大和缺图说明。“补充凭证”仍进入不发送、不保存的意见原型。研究记录不会自动发布；脚本检查批准记录，但不能代替馆主判断真实性。
 
-关键词和时间轴位于 `src/data/keywords.json`，公开小草位于 `src/data/community.json`，馆主的话位于 `src/data/curator-notes.json`。三个文件默认允许为空；录入真实内容前请阅读内容录入指南。
+关键词和时间轴位于 `src/data/keywords.json`（馆藏名称作键的数组格式，模板见 `src/data/keywordTemplete.json`），公开小草位于 `src/data/community.json`，馆主的话位于 `src/data/curator-notes.json`。三个文件默认允许为空；录入真实内容前请阅读内容录入指南。
 
 每次构建会先运行零依赖内容检查。也可以单独运行：
 
@@ -52,7 +52,7 @@ npm run test:research
 npm run validate:content
 ```
 
-图片和本地音频放入 `public/`；视频只填写外部平台链接，不下载、不内嵌。不要把 GitHub 写入令牌、管理员凭据或其他秘密放进前端代码。
+封面、截图和本地音频可放入 `src/data/`（由构建工具打包），或按指南放入 `public/`；视频只填写外部平台链接，不下载、不内嵌。不要把 GitHub 写入令牌、管理员凭据或其他秘密放进前端代码。
 
 ## GitHub 仓库
 

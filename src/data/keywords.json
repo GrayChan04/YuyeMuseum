@@ -1,3 +1,272 @@
-{
-  "keywords": []
-}
+[
+  {
+    "二踢脚": {
+      "aliases":["超级宇宙二踢脚", "脚脚大王"],
+      "description": "炮如其名，是个二踢脚。正在成长中的小孩子，言圈唯一真瓜主。喻言的第二人格。",
+      "coverimagepath": "YuyeMuseum/src/data/coverimages/二踢脚.jpg",
+      "tags": [],
+      "startdate": "2020-03-28",
+      "nodes": [
+        {
+          "date": "2020-03-28",
+          "title": "出生",
+          "description": "“大家好，我是来自鞭炮队的二踢脚。”",
+          "sources": [
+            {
+              "isexist": "true",
+              "caption": "二踢脚的自我介绍，见XX:XX",
+              "format": "video",
+              "url": "",
+              "screenshotpath": ""
+            }
+          ]
+        },
+        {
+          "date": "2020-06-05",
+          "title": "开通微博账号",
+          "description": "有了自己的微博账号",
+          "sources": [
+            {
+              "isexist": "true",
+              "caption": "二踢脚的第一条微博",
+              "format": "video",
+              "url": "",
+              "screenshotpath": ""
+            }
+          ]
+        },
+        {
+          "date": "2020-12-01",
+          "title": "初现创作天赋",
+          "description": "给喻言的第一首自作曲命名《风吹过的地方你都在》",
+          "sources": [
+            {
+              "isexist": "true",
+              "caption": "",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            }
+          ]
+        },
+        {
+          "date": "2024-08",
+          "title": "学会抢喻言物料",
+          "description": "除了物料，还有一些真瓜",
+          "sources": [
+            {
+              "isexist": "true",
+              "caption": "20240810抢来七夕节礼物",
+              "format": "picture",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "20250328瓜主答疑",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "20250328爆料yy近况",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "20250504爆料二巡生日场部分歌单",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "抢来情人节礼物",
+              "format": "picture",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "抢来滑雪直拍并瓜主爆料",
+              "format": "video",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "抢来喻言舞蹈视频",
+              "format": "video",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "20260425瓜主答疑",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            }
+          ]
+        },
+        {
+          "date": "2025-03-28",
+          "title": "公开生日",
+          "description": "生日当天空降，并公开自拍照",
+          "sources": [
+            {
+              "isexist": "true",
+              "caption": "生日公开微博",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "自拍照",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            }
+          ]
+        },
+        {
+          "date": "2026-02",
+          "title": "和喻言关系不错",
+          "description": "称呼喻言为yy，疑似和喻言争夺喻室老板之位，但被管控玩手机的时间",
+          "sources": [
+            {
+              "isexist": "true",
+              "caption": "20260214自言喜欢“脚脚大王”的称号，并自称是喻言老板，喻言还打不过她",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "20260301自称比喻言帅一点，并嘲笑喻言滑雪水平",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "喻室：NOPILIPALA，BOSS头像是狮子头，疑似捍卫喻言老板地位， XX:XX",
+              "format": "video",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "20250328玩手机的时间到了1",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "20260214喻言不给手机+玩手机的时间到了2",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "20260425抗议不能玩手机但从后续发展来看好像抗议被驳回了",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "喻言QQ音乐空降，暗示二踢脚的手机使用权受管控",
+              "format": "audio",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "20260425吐槽喻言压榨干活",
+              "format": "audio",
+              "url": "",
+              "screenshotpath": ""
+            }
+          ]
+        },
+        {
+          "date": "2026-02-14",
+          "title": "自爆基础信息",
+          "description": "",
+          "sources": [
+            {
+              "isexist": "true",
+              "caption": "已知喻言+二踢脚总高180cm，喻言身高172cm，得知二踢脚身高8cm",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "拒绝点燃，因为易燃物身份上不了飞机",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "没有牙",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            }
+          ]
+        },
+        {
+          "date": "2026-05-23",
+          "title": "首支自作曲《焰（Born of fire）》上线",
+          "description": "",
+          "sources": [
+            {
+              "isexist": "true",
+              "caption": "包揽词曲创作，艺名D.B.FireCracker",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "演唱者喻言评价：不是很成熟",
+              "format": "video",
+              "url": "",
+              "screenshotpath": ""
+            },
+            {
+              "isexist": "true",
+              "caption": "喻言QQ音乐空降再次评价：不是很成熟",
+              "format": "audio",
+              "url": "",
+              "screenshotpath": ""
+            }
+          ]
+        },
+        {
+          "date": "2026-08-22",
+          "title": "第二支自作曲《请勿打扰》上线",
+          "description": "",
+          "sources": [
+            {
+              "isexist": "true",
+              "caption": "再次包揽词曲创作",
+              "format": "text",
+              "url": "",
+              "screenshotpath": ""
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

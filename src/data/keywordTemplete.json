@@ -1,0 +1,25 @@
+{
+  "keyword": {
+    "aliases":[],
+    "description": "",
+    "coverimagepath": "",
+    "tags": [],
+    "startdate": "",
+    "nodes": [
+      {
+        "date": "",
+        "title": "",
+        "description": "",
+        "sources": [
+          {
+            "isexist": "true or false",
+            "caption": "the caption of the source",
+            "format": "if exists, choose from picture, video, or audio, otherwise picture",
+            "url": "if exists, provide the url, otherwise the screenshotpath",
+            "screenshotpath": "the path in the museum"
+          }
+        ]
+      }
+    ]
+  }
+}
